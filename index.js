@@ -949,6 +949,7 @@ router.get("/server", function(req,res) {
 
 router.get("/search",async function(req,res){
   let q = req.query.q || ""
+	let links = {}
   /*let defaultLinks = JSON.parse(await fs.promises.readFile(__dirname+"/public/links.json"))
   let links = Object.assign({},defaultLinks)
   for(let i in links){
@@ -968,7 +969,7 @@ router.get("/search",async function(req,res){
     }
   })
   
-  fs.createReadStream(__dirname+'/public/search/index.html')
+  fs.createReadStream(__dirname+'/search/index.html')
     .pipe(newLineStream())
     .pipe(parser)
     .on("error",e => {
