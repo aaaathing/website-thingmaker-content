@@ -1155,7 +1155,7 @@ router.post("/server/register",getPostData, async (request, response) => {
         setUser(session.id, response, session.pwd, account.username)
         response.json({
           success:true,
-          redirect:"/",
+          redirect:"/posts/",
           sid:session.id,
           spwd:session.pwd
         })
@@ -1192,7 +1192,7 @@ router.post('/server/login', getPostData, async (request, response) => {
           setUser(session.id, response, session.pwd, request.body.username)
           response.json({
             success:true,
-            redirect:"/",
+            redirect:"/posts/",
             sid:session.id,
             spwd:session.pwd
           })
