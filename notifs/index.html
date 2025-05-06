@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Notifications</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/common.css">
+    <style>
+      .notif{
+        border:1px solid lightgray;
+        border-radius:5px;
+        padding:10px 20px;
+        width:100%;
+        margin-bottom:20px;
+      }
+      .notif.read{
+        background:#f6f6f6;
+      }
+      body[theme=dark] .notif.read{
+        background:#222;
+      }
+      .actions{
+        border-left:1px solid gray;
+        width: fit-content;
+        margin-top:16px;
+      }
+      .actions > div{
+        border:1px solid gray;
+        border-left:none;
+        padding:8px;
+        display:inline-block;
+      }
+      h1, h3{
+        margin:0px;
+      }
+      h1{font-size:50px;}
+      a{
+        text-decoration:none;
+        color:blue;
+        cursor:pointer;
+      }
+      a:hover{
+        text-decoration:underline;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+	<!-- ©, by thingmaker. thingmaker.us.eu.org -->
+  <body>
+    <div id="contentBG">
+      <div id="content">
+        <h1 id="username">Notifications</h1>
+        <a onclick="deleteNotifs()">Delete all notifications</a>
+        <br><br>
+      </div>
+    </div>
+    <script src="/assets/common.js" data-usernav="true"></script>
+    <script>
+      var content = document.getElementById("content")
+      fetch("/server/account", {
+        credentials: 'include'
+      }).then(r => r.json()).then(data => {
+        if((!data.notifs) || (data.notifs.length===0)){
+          content.innerHTML += "<span style='color:gray;'>No notifications yet</span>"
+          return
+        }
+        let html = ""
+        for(var i=data.notifs.length-1; i>=0; i--){
+          var r = data.notifs[i]
+          html += `<div class="notif ${r.read ? "read" : ""}">${format(r.notif)}`
+          if(r.actions){
+            html += "<div class='actions'>"
+            for(let a of r.actions){
+              html += "<div>"
+              if(a.action.startsWith("open:")) html += `<a href="${a.action.replace("open:","")}">`
+              html += a.title
+              if(a.action.startsWith("open:")) html += "</a>"
+              html += "</div>"
+            }
+            html += "</div>"
+          }
+          html += "</div>"
+        }
+        content.innerHTML += html
+
+        fetch("/server/clearNotifs", {
+          credentials: 'include'
+        }) //clear notifications
+      })
+
+      function deleteNotifs(){
+        fetch("/server/deleteNotifs",{credentials:'include'}).then(r => r.json()).then(r => {
+          if(r.success){
+            location.reload()
+          }else{
+            alert(r.message)
+          }
+        })
+      }
+    </script>
+  </body>
+</html>

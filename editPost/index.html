@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="robots" content="noindex">
+    <link rel="stylesheet" href="/assets/common.css">
+    <style>
+      h1.skeletonText{
+        width:50%;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+	<!-- ©, by thingmaker. thingmaker.us.eu.org -->
+  <body>
+    <div id="contentBG">
+      <div id="content">
+        <h1 id="title" class="skeletonText">&nbsp;</h1><br><br>
+        <script src="/assets/textbox.js" textboxId="postContent" textboxPlaceholder="Content of post..."></script>
+				<br>
+				Background image address: <input id="bgInput">
+        <br>
+        <button onclick="save()">Save</button>
+        <span id="msg" style="color:red;"></span>
+      </div>
+    </div>
+    <script src="/assets/common.js" data-usernav="true"></script>
+    <script>
+      const urlParams = new URLSearchParams(location.search);
+      var id = urlParams.get('id')
+      var msg = document.querySelector("#msg")
+      fetch("/server/post/"+id).then(r => r.json()).then(r => {
+        if(!r){
+          return location.href = "/posts"
+        }
+
+        var titleEl = document.querySelector("#title")
+        titleEl.classList.remove("skeletonText")
+        document.title = titleEl.innerHTML = "Edit \""+r.title+"\""
+
+        document.querySelector("#postContent .comment-box").value = r.content
+
+				if(r.bg){
+					document.querySelector("#bgInput").value = r.bg
+				}
+      })
+
+      function save(){
+        var content = document.querySelector("#postContent .comment-box").value
+        fetch("/server/editPost/"+id, {
+          method:"POST",
+          credentials:"include",
+          body:JSON.stringify({
+						content:content,
+						bg: document.querySelector("#bgInput").value || undefined
+					})
+        }).then(r => r.json()).then(r => {
+          if(r.success){
+            location.href = "/post?id="+id
+          }else{
+            msg.innerHTML = r.message
+          }
+        }).catch(e => {
+          msg.innerHTML = e
+        })
+      }
+    </script>
+  </body>
+</html>

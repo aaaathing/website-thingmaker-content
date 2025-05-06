@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Account</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="robots" content="noindex">
+    <link rel="stylesheet" href="/assets/common.css">
+    <style>
+      #content{
+        display:flex;
+        flex-direction:row;
+        background:#eee;
+      }
+      body[theme=dark] #content{
+        background:#222;
+      }
+
+      .box{
+        border:1px solid gray;
+        border-radius:10px;
+        padding:20px;
+        background:white;
+        margin-bottom:40px;
+      }
+      body[theme=dark] .box{
+        background:#333;
+      }
+
+      #left{
+        width:20%;
+        padding-right:20px;
+      }
+      #right{
+        width:80%;
+      }
+
+      #settingsNav {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        border:1px solid #ddd;
+      }
+      body[theme=dark] #settingsNav{
+        border-color:#444;
+      }
+
+      /* Style the navigation links */
+      #settingsNav li a {
+        padding: 12px;
+        text-decoration: none;
+        color: black;
+        display: block
+      }
+      body[theme=dark] #settingsNav li a{
+        color:#ddd;
+      }
+
+      #settingsNav li a:hover {
+        background-color: #f8f8f8;
+      }
+      body[theme=dark] #settingsNav li a:hover {
+        background:#111;
+      }
+
+      #bioBox{
+        width:100%;
+        min-height:100px;
+        resize:vertical;
+      }
+
+      #capeList > div{
+        display:inline-block;
+        margin:5px;
+        border:1px solid gray;
+        padding:8px;
+        text-align:center;
+        cursor:pointer;
+      }
+      #capeList > div:hover{
+        border-color:black;
+      }
+      #capeList canvas{
+        margin:0 auto;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+  <body> <!-- ©, by thingmaker. thingmaker.us.eu.org -->
+    <div id="contentBG">
+      <div id="content">
+        <div id="left">
+          <h3 id="username">My account</h3><br><br>
+          <ul id="settingsNav">
+            <li><a href="#options">Options</a></li>
+            <li><a href="#pfp">Profile picture</a></li>
+            <li><a href="#bio">Bio</a></li>
+            <li><a href="#skin">Skin</a></li>
+          </ul>
+        </div>
+        <div id="right">
+          <!--<div class="box">
+            <h4>My projects (Only you can see this)</h4>
+            <div id="projects"></div>
+          </div>-->
+          <div class="box" id="options">
+            <div id="profile"></div><br>
+            <button onclick="logout()">Logout</button>
+            <button onclick="if(confirm('Are you sure you want to delete account.')){deleteAccount()}">Delete account</button><br><br>
+            <b>Username:</b>
+            <input disabled id="usernameInp" type="username" class="small"><br><br>
+            <button id="changePwd" onclick="changePwd()">Change password</button>
+            <div id="changePwdForm" style="display:none;"></div><br><br>
+            <button id="changeEmail" onclick="changeEmail()">Change Email</button>
+            <div id="changeEmailForm" style="display:none;"></div><br><br>
+            Profanity filter (<span id="profanityFilterOn"></span>): <div class="toggleSwitch" id="profanityFilter" onclick="toggleProfanityFilter()"><span></span></div>
+            Profanity filter removes bad words from text.
+          </div>
+          <div class="box" id="pfp">
+            <h3>Profile picture (pfp)</h3>
+            <img id="pfpImg" alt="your profile picture" style="width:100px;"><br><br>
+            <h3>Background</h3>
+            <img id="bg" alt="your background" style="width:400px;"><br><br>
+            <b>Change pfp/background</b>
+            <input placeholder="Image address"><br>
+            <button onclick="changePfp()">Set as pfp</button>
+            <button onclick="changeBG()">Set as background</button>
+          </div>
+          <div class="box" id="bio">
+            <h3>Bio</h3>
+            <textarea id="bioBox" placeholder="Don't know what to write?&#10;Just don't write anything!"></textarea><br>
+            <button onclick="saveBio()">Save</button>
+            <span id="bioInfo"></span>
+          </div>
+          <div class="box" id="skin">
+            <h3>Your skin for MineKhan:</h3>
+            <canvas id="skinCanv" style="display:block;width:160px;height:320px;image-rendering:pixelated;border:1px solid black;"></canvas><br>
+            <label for="changeSkin">Upload a skin:</label>
+            <input type="file" id="changeSkin" accept="image/*"><br>
+            <span id="skinStatus"></span><br><br>
+            <a href="https://www.minecraftskins.com/skin-editor/" target="_blank">Make a skin</a><br>
+            Can't decide what skin to make? Click <a href="https://www.minecraftskins.com/" target="_blank">here</a><br><br>
+            Note: This only supports wide skins.
+            <div class="hidden" id="capes"><br><br>
+              <h3>Your cape & stuff</h3>
+              <canvas id="currentCape"></canvas>
+              <h4>Equip a cape</h4>
+              <div id="capeList"></div>
+              <div id="addCape" class="hidden">
+                Add cape:
+                <input type="file" accept="image/*">
+              </div>
+            </div>
+          </div>
+          <!--<div class="box" id="theme">
+            <h3>Theme</h3>
+            <input type="radio" id="themeNormal" name="theme" value="normal" onclick="setTheme(this.value)" class="notText">
+            <label for="themeNormal">Normal</label><br>
+            <input type="radio" id="themeDark" name="theme" value="dark" onclick="setTheme(this.value)" class="notText">
+            <label for="themeDark">Dark</label><br>
+            <input type="radio" id="themeGlow" name="theme" value="glow" onclick="setTheme(this.value)" class="notText">
+            <label for="themeGlow">Glow</label><br>
+          </div>-->
+        </div>
+      </div>
+    </div>
+    <script src="/assets/common.js" data-usernav="true"></script>
+    <script>
+      /*var container = document.querySelector("#projects");
+      
+      try{
+        var webpage = unescape(localStorage.getItem("Programs").split("|")[0]);
+        var pjs = unescape(localStorage.getItem("PJSPrograms").split("|")[0]);
+        
+        container.innerHTML = `<a href="code%20editor/pjs.html?program=0">First PJS Program</a>`
+        container.innerHTML += "<br>";
+        container.innerHTML += `<a href="code%20editor/html.html?program=0">First Webpage</a>`
+      }catch{}*/
+
+      fetch('/server/account',{
+        credentials: "include"
+      }).then(r => r.json()).then(data => {
+        document.querySelector('#username').innerHTML = data.username+"'s account (My account)"
+        document.querySelector("#usernameInp").value = data.username
+        document.querySelector("#profile").innerHTML = "<a href='/user?user="+data.username+"'>My profile</a>"+(data.admin ? "<br>You are an admin" : "")
+        document.querySelector("#pfp #pfpImg").src = data.pfp
+        document.querySelector("#pfp #bg").src = data.bg
+        document.querySelector("#bioBox").value = data.bio || ""
+        if(data.skin) setSkin(data.skin)
+
+        if(data.ownedCapes || data.cape || data.admin){
+          document.querySelector("#capes").classList.remove("hidden")
+          if(data.cape) drawCape(data.cape, document.querySelector("#currentCape"))
+          if(data.admin){
+            fetch("/server/capes").then(r => r.json()).then(r => populateCapeList(r,true))
+            document.querySelector("#addCape").classList.remove("hidden")
+          }else{
+            var p = []
+            var capes = {}
+            if(data.ownedCapes){
+              data.ownedCapes.forEach(v => {
+                p.push(fetch("/server/cape/"+escape(v)).then(r => r.text()).then(r => capes[v] = r))
+              })
+            }
+            Promise.all(p).then(() => populateCapeList(capes))
+          }
+        }
+        if(data.profanityFilter) document.querySelector("#profanityFilter").classList.add('checked')
+        else document.querySelector("#profanityFilter").classList.remove('checked')
+        document.querySelector("#profanityFilterOn").innerHTML = data.profanityFilter ? "on" : "off"
+      })
+
+      function logout(){
+        fetch("/server/logout", {credentials: 'include'}).then(() => location.href = "/").catch(alert)
+      }
+      function deleteAccount(){
+        if(!confirm("Are you sure your want to delete your account? Your will lose access to your cloud saves and posts.")) return
+        fetch("/server/deleteAccount", {
+          method: "DELETE",
+          credentials: 'include'
+        }).then(() => location.href = "/website/website.html").catch(alert)
+      }
+      function changePfp(){
+        var url = document.querySelector("#pfp input").value
+        fetch("/server/changePfp", {
+          method:"POST",
+          credentials:'include',
+          body: JSON.stringify({pfp:url})
+        }).then(r => r.json()).then(r => {
+          if(r.success){
+            document.querySelector("#pfp #pfpImg").src = r.pfp
+          }else alert(JSON.stringify(r.message))
+        })
+      }
+      function changeBG(){
+        var url = document.querySelector("#pfp input").value
+        fetch("/server/changePfp", {
+          method:"POST",
+          credentials:'include',
+          body: JSON.stringify({bg:url})
+        }).then(r => r.json()).then(r => {
+          if(r.success){
+            document.querySelector("#pfp #bg").src = r.bg
+          }else alert(JSON.stringify(r.message))
+        })
+      }
+      function changePwd(){
+        var btn = document.querySelector("#changePwd")
+        btn.style.display = "none"
+        var form = document.querySelector("#changePwdForm")
+        form.style.display = ""
+        form.innerHTML = `
+        <b>Enter your new password:</b>
+        <input id="newPwd" type="password" class="small">
+        <button id="changePwdBtn">Change password</button>
+        `
+        var ok = document.getElementById("changePwdBtn");
+        ok.onclick = () => {
+          form.style.display = "none"
+          fetch("/server/changePwd", {
+            method:"POST",
+            credentials:'include',
+            body: JSON.stringify({pwd: document.getElementById("newPwd").value})
+          }).then(r => r.json()).then(r => {
+            if(r.success){
+              btn.style.display = ""
+            }else alert(r.message)
+          })
+        }
+      }
+      function changeEmail(){
+        var btn = document.querySelector("#changeEmail")
+        btn.style.display = "none"
+        var form = document.querySelector("#changeEmailForm")
+        form.style.display = ""
+        form.innerHTML = `
+        <b>Enter your new email:</b>
+        <input id="newEmail" type="email" class="small">
+        <button id="changeEmailBtn">Change Email</button>
+        `
+        var ok = document.getElementById("changeEmailBtn");
+        ok.onclick = () => {
+          form.style.display = "none"
+          fetch("/server/changeEmail", {
+            method:"POST",
+            credentials:'include',
+            body: JSON.stringify({email: document.getElementById("newEmail").value})
+          }).then(r => r.json()).then(r => {
+            if(r.success){
+              btn.style.display = ""
+            }else alert(r.message)
+          })
+        }
+      }
+      function saveBio(){
+        document.querySelector("#bioInfo").innerHTML = ""
+        var v = document.querySelector("#bioBox").value
+        fetch("/server/changeBio", {
+          method:"POST",
+          credentials:'include',
+          body: JSON.stringify({bio:v})
+        }).then(r => r.json()).then(r => {
+          if(r.success){
+            document.querySelector("#bioInfo").innerHTML = "Success!"
+          }else document.querySelector("#bioInfo").innerHTML = r.message
+        })
+      }
+
+      var skinUpload = document.querySelector("#changeSkin")
+      var skinStatus = document.querySelector("#skinStatus")
+      var skinCanv = document.querySelector("#skinCanv")
+      var fr = new FileReader()
+      skinUpload.onchange = function(){
+        fr.onload = function(){
+          setSkin(fr.result, true)
+        }
+        fr.readAsDataURL(skinUpload.files[0])
+      }
+      function uploadSkin(url){
+        fetch("/server/changeSkin",{
+          credentials:'include',
+          method:"POST",
+          body:JSON.stringify({
+            skin: url
+          })
+        }).then(r => r.json()).then(data => {
+          if(data.success){
+            skinStatus.innerHTML = "Uploaded."
+          }else{
+            skinStatus.innerHTML = data.message
+          }
+        })
+      }
+      function setSkin(url, upload){
+        var image = new Image()
+        image.onload = function(){
+          if(image.width === image.height){
+            let s = image.width/64
+            skinCanv.width = 16*s
+            skinCanv.height = 32*s
+            var ctx = skinCanv.getContext("2d")
+            ctx.drawImage(image,8*s,8*s,8*s,8*s, 4*s,0,8*s,8*s)
+            ctx.drawImage(image,44*s,20*s,4*s,12*s, 0,8*s,4*s,12*s)
+            ctx.drawImage(image,36*s,52*s,4*s,12*s, 12*s,8*s,4*s,12*s)
+            ctx.drawImage(image,20*s,20*s,8*s,12*s, 4*s,8*s,8*s,12*s)
+            ctx.drawImage(image,4*s,20*s,4*s,12*s, 4*s,20*s,4*s,12*s)
+            ctx.drawImage(image,20*s,52*s,4*s,12*s, 8*s,20*s,4*s,12*s)
+            if(upload) uploadSkin(url)
+          }else{
+            alert("That's not a skin, silly.")
+          }
+        }
+        image.onerror = e => alert("Error! "+e)
+        image.src = url
+      }
+      function drawCape(url,canvas){
+        if(!canvas) canvas = document.createElement("canvas")
+        
+        canvas.style.display = "block"
+        canvas.style.width = "100px"
+        canvas.style.height = "160px"
+        canvas.width = 10
+        canvas.height = 16
+        canvas.style.imageRendering = "pixelated"
+        canvas.style.border = "1px solid black"
+        var ctx = canvas.getContext("2d")
+    
+        if(url){
+          var image = new Image()
+          image.onload = function(){
+            var pixW = image.width / 64
+            var pixH = image.height / 32
+            canvas.width = pixW * 10
+            canvas.height = pixH * 16
+            ctx.drawImage(this, pixW,pixH,pixW*10,pixH*16, 0,0,canvas.width,canvas.height)
+          }
+          image.onerror = e => alert("Error! "+e)
+          image.src = url
+        }else{
+          ctx.clearRect(0,0,canvas.width,canvas.height)
+        }
+        
+        return canvas
+      }
+      function addCape(url,name,admin){
+        var c = drawCape(url)
+        var container = document.createElement("div")
+        var div = document.createElement("div")
+        div.appendChild(c)
+        var span = document.createElement("span")
+        span.innerHTML = name+"<br>"
+        div.appendChild(span)
+        container.appendChild(div)
+        capeList.appendChild(container)
+        if(admin){
+          var a = document.createElement("a")
+          a.innerHTML = "Delete cape"
+          a.onclick = function(){
+            if(!confirm("Are you sure you want to delete "+name+"? It will delete for all users.")) return
+            fetch("/server/removeCape",{
+              method:"POST",
+              credentials:"include",
+              body:JSON.stringify({name:name})
+            }).then(r => r.json()).then(r => {
+              if(r.success){
+                container.remove()
+              }else{
+                alert(r.message)
+                console.log(r.message)
+              }
+            })
+          }
+          container.appendChild(a)
+        }
+
+        div.onclick = function(){
+          fetch("/server/equipCape",{
+            method:"POST",
+            credentials:'include',
+            body:JSON.stringify({cape:name})
+          }).then(r => r.json()).then(r => {
+            if(r.success){
+              drawCape(url, document.querySelector("#currentCape"))
+            }else{
+              alert(r.message)
+              console.log(r.message)
+            }
+          })
+        }
+      }
+      function populateCapeList(capes,admin){
+        var capeList = document.querySelector("#capeList")
+        if(admin){
+          let b = document.createElement("b")
+          b.textContent = "Showing all capes"
+          capeList.appendChild(b)
+        }
+        var div = document.createElement("div")
+        div.innerHTML = "None"
+        div.style.display = "block"
+        div.onclick = function(){
+          fetch("/server/equipCape",{
+            method:"POST",
+            credentials:'include',
+            body:JSON.stringify({cape:null})
+          }).then(r => r.json()).then(r => {
+            if(r.success){
+              drawCape(null, document.querySelector("#currentCape"))
+            }else{
+              alert(r.message)
+              console.log(r.message)
+            }
+          })
+        }
+        capeList.appendChild(div)
+        for(var i in capes){
+          addCape(capes[i],i,admin)
+        }
+      }
+      document.querySelector("#addCape input").onchange = function(){
+        var me = this
+        fr.onload = function(){
+          var theName = prompt("What will the cape be called?")
+          if(!theName) return
+          var url = fr.result
+          fetch("/server/addCape",{
+            method:"POST",
+            credentials:"include",
+            body:JSON.stringify({name:theName,url:url})
+          }).then(r => r.json()).then(r => {
+            if(r.success){
+              addCape(url,theName)
+            }else{
+              alert(r.message)
+              console.log(r.message)
+            }
+          })
+        }
+        fr.readAsDataURL(me.files[0])
+      }
+
+      function toggleProfanityFilter(){
+        var el = document.querySelector("#profanityFilter")
+        var on = !el.classList.contains("checked")
+        fetch("/server/changeProfanityFilter",{
+          credentials:'include',
+          method:"POST",
+          body:JSON.stringify({on})
+        }).then(r => r.json()).then(r => {
+          if(!r.success) return alert(r.message)
+          if(on) el.classList.add('checked')
+          else el.classList.remove('checked')
+          document.querySelector("#profanityFilterOn").innerHTML = on ? "on" : "off"
+        })
+      }
+      
+      /*async function setTheme(theme){
+        await localforage.setItem("theme", theme)
+        updateTheme(theme)
+      }
+      var theme
+      window.addEventListener("load", () => {
+        localforage.getItem("theme").then(r => {
+          theme = r || "normal"
+          document.querySelector("input[name=theme][value="+theme+"]").checked = true
+        })
+      })*/
+    </script>
+  </body>
+</html>

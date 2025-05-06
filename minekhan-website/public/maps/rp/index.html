@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <link href='https://fonts.googleapis.com/css?family=Aclonica' rel='stylesheet'>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+		<base href="/minekhan-website/">
+    <title>MineKhan&nbsp|&nbspMaps</title>
+    <link rel="shortcut icon" href="/play/favicon.ico">
+    <link href="maps/style.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/common.css" rel="stylesheet" type="text/css" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+<body>
+
+<div class="header">
+  <h1><img src="/minekhan/assets/images/minekhan.png" alt="MineKhan" border="0"></h1>
+</div>
+
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card" id="map">Loading resource pack... <div class="loader"></div></div>
+  </div>
+    <div class="follow">
+      <h3>Follow Us</h3>
+      <p><a href="https://replit.com/@thingMaker">thingMaker</a><br>
+      <a href="https://www.replit.com/@TNJS">TNJS</a><br> <br> </p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <h5>All Rights Reserved</h5>
+</div>
+
+<script src="/assets/common.js" data-usernav="true"></script>
+<script>
+  const urlParams = new URLSearchParams(location.search)
+
+  var download
+
+  fetch("/server/rp/"+urlParams.get("rp")).then(r => r.json()).then(map => {
+    var html = ""
+    if(map){
+      if(map.thumbnail) html += "<img class='thumbnail' src='"+map.thumbnail+"'>"
+      html += "<a><h2>Resource pack: "+format(map.name)+"</h2></a>"
+      if(map.user) html += "By <a href='/user?user="+map.user+"'>"+map.user+"</a><br>"
+      if(map.description) html += "<p>"+format(map.description)+"</p>"
+      html += "<label for='url'>Resource pack URL: </label><input type='url' value='rp/"+map.name+"'>"
+      html += "<br><br>Size: "+map.bytes+" bytes."
+      if(userInfo && map.user === userInfo.username){
+        html += "<br><a href='edit/?rp="+map.name+"'>Edit</a>"
+      }
+      html += "<div style='clear:both;'></div>"//stop image going out of div
+
+      document.title = map.name+" | "+document.title
+    }else location.href = "maps/map/ /";
+    document.querySelector("#map").innerHTML = html
+  })
+</script>
+</body>
+</html>

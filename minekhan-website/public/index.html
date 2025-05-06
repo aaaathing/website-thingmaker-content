@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="google-site-verification" content="3rueO6aHt4zjiAeRkRmr0EBapUQuLBVpIMAxhtsvsMo" />
+  <meta name="google-site-verification" content="H3vYs-knoyp1s7il1IbvUfCSW8gSrXXYaSX_4i0x4Xg" />
+	<link rel="shortcut icon" href="assets/favicon.png">
+  <!--<link rel="stylesheet" href="/assets/common.css">-->
+	<link rel="stylesheet" href="style.css">
+	<link href='https://fonts.googleapis.com/css?family=Aclonica' rel='stylesheet'>
+	<meta name="description" content="This website used to look like this. Play the old fun game MineKhan!">
+	<title>MineKhan | Home</title>
+</head>
+
+<body>
+
+<section class="showcase">
+  <div class="content">
+    <div class="title">
+      <img src="/minekhan/assets/images/minekhan.png">
+    </div>
+    <h3>Play now, online</h3>
+    <a href="wiki" class="btn">Wiki</a>
+    <span style="width:150px;display:inline-block;"></span>
+      
+    <a href="/minekhan/" class="btn">Play</a>
+    <span style="width:150px;display:inline-block;"></span>
+    
+    <a href="maps/browse" class="btn">Maps</a>
+    <br>
+    <img style="position:absolute;width:100px;bottom:0;left:calc(50% - 50px);" src="assets/down-arrow.png">
+    </div>
+  </section>
+  <section id="channel">
+    <div class="content">
+      <img src="https://videos.minekhan.repl.co/assets/favicon.png" width="80">
+
+      <span style="width:20px;display:inline-block;">&nbsp;</span>
+      <h1>Check out the channel (not maintained anymore)</h1>
+      <br><br>
+      <a href="https://www.youtube.com/channel/UCHEaU7t-GJ3XWOBtbbfsyPg" class="btn" target="_blank">View channel</a>
+    </div>
+  </section>
+  
+  <section id="links">
+		<div class="content">
+			<h1>Search the website</h1><br>
+			<div class="search-container">
+				<form action="/search">
+					<input type="text" placeholder="Search..." name="q">
+<button type="submit">🔎</button>
+				</form>
+			</div>
+		</div>
+	</section>
+<!--<script src='https://Updates.minekhan.repl.co/updates.js'></script>
+<script>
+  showUpdates(document.getElementById('updates'))
+</script>-->
+	<!--<section class="showcase">
+
+		<div class="content">
+			<div class="title">
+        <img src="https://data.thingmaker.repl.co/images/minekhan.png">
+			</div>
+			<h3>Play now, online</h3>
+      <a href="/wiki" class="btn">Wiki</a>
+			<span style="width:150px;display:inline-block;"></span>
+        
+      <a href="/play" class="btn">Play</a>
+      <span style="width:150px;display:inline-block;"></span>
+      
+			<a href="/maps/browse" class="btn">Maps</a>
+      <br>
+      <img style="position:absolute;width:100px;bottom:0;left:calc(50% - 50px);" src="/assets/down-arrow.png">
+
+      </div>
+		</section>
+    <!--<section id="channel">
+      <div class="content">
+        <img src="https://videos.minekhan.repl.co/assets/favicon.png" width="80">
+
+        <span style="width:20px;display:inline-block;">&nbsp;</span>
+        <h1>Check out the channel</h1>
+        <br><br>
+        <a href="https://www.youtube.com/channel/UCHEaU7t-GJ3XWOBtbbfsyPg" class="btn" target="_blank">View channel</a>
+      </div>
+    </section>
+    <section id="links">
+      <div class="content">
+        <h1>Search the website</h1><br>
+        <div class="search-container">
+          <form action="/search">
+            <input type="text" placeholder="Search..." name="q">
+  <button type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
+      </div>
+    </section>-->
+
+    <!--<script src="/assets/common.js" data-usernav="true"></script> <!--This has swal in it-->
+
+<!--
+  Notifications
+-->
+<script>
+  function RequestNotify(){
+ {
+    if (!window.Notification) {
+        Swal.fire({
+          title:"Oh no!",
+          text:"It seems that your browser does not support notifications!",
+        })
+    } else {
+        // check if permission is already granted
+        if (Notification.permission === 'granted') {
+            // show notification here
+          
+        } else {
+            // request permission from user
+            Notification.requestPermission().then(function (p) {
+                if (p === 'granted') {
+                    // show notification here
+                    var notify = new Notification('MineKhan', {
+                        body: 'This is what notifications will look like!',
+                        icon: 'https://minekhan.repl.co/play/favicon512.png',
+                    });
+                } else {
+                   Swal.fire({
+                     title:"Notifcations!",
+                     text:"Please consider allowing notifications, so that we can alert you of new maps, and even chat features in the future!",
+                     toast: true,
+                     timer: 3000,
+                     showConfirmButton:false,
+                     position: 'top-right',
+                    
+                   })
+                }
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }
+}
+}
+function notifyMe() {
+    if (!window.Notification) {
+        console.log('Browser does not support notifications.');
+    } else {
+        // check if permission is already granted
+        if (Notification.permission === 'granted') {
+            // show notification here
+          
+        } else {
+            // request permission from user
+            Notification.requestPermission().then(function (p) {
+                if (p === 'granted') {
+                    // show notification here
+                    var notify = new Notification('MineKhan', {
+                        body: 'Thank you for enabling notifications!',
+                        icon: 'https://minekhan.repl.co/play/favicon512.png',
+                    });
+                } else {
+                  
+                }
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }
+}
+
+function note(){
+ var notify = new Notification('Oops!', {
+                body: 'There seems to be an error there!',
+                icon: 'https://minekhan.repl.co/play/favicon512.png',
+            });
+}
+</script>
+</body>
+</html>

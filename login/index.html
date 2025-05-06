@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="robots" content="noindex">
+    <link rel="stylesheet" href="/assets/common.css">
+    <style>
+      #contentBG{
+        background:#eee;
+        padding:5% 10%;
+        min-height:calc(100% - 47px);
+      }
+      #content{
+        background:white;
+        min-height:calc((100vh - 47px) * 0.75);
+        display:flex;
+        flex-direction:row;
+        padding:0px;
+      }
+
+      #left{
+        background:#1abc9c;
+        width:30%;
+        display:flex;
+        justify-content:center;
+        padding:20px 0px;
+      }
+      #right{
+        padding:10px 20px;
+        width:70%;
+      }
+      #right button.long{
+        background:blue;
+        color:white;
+        border-radius:100px 10px;
+        width:100%;
+        padding:8px 0px;
+        border:none;
+        font-size:20px;
+        cursor:pointer;
+        transition:0.4s linear;
+      }
+      #right button.long:hover{
+        background:lightblue;
+        color:black;
+      }
+      #right button.long[disabled]{
+        background:gray;
+        color:gray;
+      }
+      #left h1{
+        font-size:50px;
+        margin:0px;
+        color:white;
+      }
+      label{font-weight:bold;}
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+	<!-- ©, by thingmaker. thingmaker.us.eu.org -->
+  <body>
+    <div id="contentBG">
+      <div id="content">
+        <div id="left"><h1>Login<br>or<br>Register</h1></div>
+        <div id="right">
+          <h2>Login</h2>
+          <form>
+          <label for="username"></label><br>
+          <input id="username" type="username" class="round">
+          <button onclick="randomUsername()" id="randomBtn" type="button">Random</button>
+          <br><br>
+          <!--<div id="emailContainer">
+            <label for="email">Email (optional, for password reset)</label><br>
+            <input id="email" type="email" class="round">
+            <br><br>
+          </div>-->
+          <label for="password"></label><br>
+          <input id="password" type="password" class="round" autocomplete="current-password">
+          <br><br>
+          </form>
+          <!--Before registering, please read the <a href="/rules.html" target="_blank">rules</a>. There will be a message if the rules change.<br>-->
+          <a onclick="forgotPassword()" id="forgotPasswordLink">Forgot password?</a>
+          <pre id="error" style="color:red;"></pre><br>
+
+          <button onclick="login()" id="loginBtn" class="long">Login</button>
+          <button onclick="register()" id="createBtn" class="long">Create account</button>
+          <br><br>
+          <a id="switch"></a>
+        </div>
+      </div>
+    </div>
+    <script src="/assets/common.js" data-usernav="true"></script>
+    <script>
+      //This page can be used with window.open()
+      //just listen for postMessages
+      var parent = window.opener || window.top || window
+      function postLogged(res){
+        parent.postMessage({logged:res}, "*");
+      }
+      function postCanceled(){
+        parent.postMessage({canceled:true}, "*");
+      }
+      window.onbeforeunload = postCanceled
+
+      const urlParams = new URLSearchParams(location.search)
+      var redirect = urlParams.get("redirect")
+      var usernameEl = document.getElementById("username")
+      var passwordEl = document.getElementById("password")
+      var emailEl = document.querySelector("#email")
+      var error = document.getElementById("error")
+      var switchLink = document.querySelector("#switch")
+      var forgotPasswordLink = document.querySelector("#forgotPasswordLink")
+
+      function switchTo(type){
+        if(type === "login"){
+          document.querySelector("#loginBtn").classList.remove("hidden")
+          document.querySelector("#createBtn").classList.add("hidden")
+          //document.querySelector("#emailContainer").classList.add("hidden")
+          document.querySelector("#randomBtn").classList.add('hidden')
+          document.querySelector("label[for=username]").textContent = "Username"
+          document.querySelector("label[for=password]").textContent = "Password"
+          forgotPasswordLink.classList.remove("hidden")
+          switchLink.innerHTML = "Don't have an account? Register"
+        }else if(type === "register"){
+          document.querySelector("#loginBtn").classList.add("hidden")
+          document.querySelector("#createBtn").classList.remove("hidden")
+          //document.querySelector("#emailContainer").classList.remove("hidden")
+          document.querySelector("#randomBtn").classList.remove('hidden')
+          document.querySelector("label[for=username]").textContent = "Create Username"
+          document.querySelector("label[for=password]").textContent = "Create Password"
+          forgotPasswordLink.classList.add("hidden")
+          switchLink.innerHTML = "Already have an account? Login"
+          randomUsername()
+        }else{
+          console.error("no such type:",type)
+        }
+      }
+      switchTo("login")
+      switchLink.onclick = function(){
+        switchTo(this.innerHTML === "Don't have an account? Register" ? "register" : "login")
+      }
+
+      function login(){
+        var username = usernameEl.value
+        var password = passwordEl.value
+        if(username === "") {
+          error.innerHTML = "Please enter username."
+          return
+        }
+        document.querySelector("#loginBtn").disabled = document.querySelector("#createBtn").disabled = true
+        fetch("/server/login",{
+          method: "POST",
+          credentials: 'include',
+          body: JSON.stringify({username: username, password:password})
+        }).then(res => res.json()).then(async res => {
+          if(res.success){
+            await sameSubscribe()
+            postLogged(res)
+            location.href = redirect || res.redirect
+          }else{
+            error.innerHTML = res.message
+          document.querySelector("#loginBtn").disabled = document.querySelector("#createBtn").disabled = false
+          }
+        }).catch(alert)
+      }
+      function register(){
+        var username = usernameEl.value
+        var password = passwordEl.value
+        if(username === "") {
+          error.innerHTML = "Please enter username."
+          return
+        }
+        document.querySelector("#loginBtn").disabled = document.querySelector("#createBtn").disabled = true
+        fetch("/server/register",{
+          method: "POST",
+          credentials: 'include',
+          body: JSON.stringify({username: username, password:password, email:emailEl&&emailEl.value || null})
+        }).then(res => res.json()).then(async res => {
+          if(res.success){
+            await sameSubscribe()
+            postLogged(res)
+            location.href = redirect || res.redirect
+          }else{
+            error.innerHTML = res.message
+            document.querySelector("#loginBtn").disabled = document.querySelector("#createBtn").disabled = false
+          }
+        }).catch(alert)
+      }
+
+      function forgotPassword(){
+        var username = usernameEl.value
+        if(!username){
+          return error.innerHTML = "Please type your username first."
+        }
+        fetch("/server/resetPwd",{
+          credentials:'include',
+          method:'POST',
+          body: JSON.stringify({username:username})
+        }).then(r => r.json()).then(r => {
+          if(r.success){
+            error.innerHTML = "<span style='color:green'>Check your email</span>"
+          }else{
+            error.innerHTML = r.message
+          }
+        })
+      }
+      async function randomUsername(){
+        let {default:wordGenerator} = await import("/assets/word.js")
+        document.querySelector("#username").value = wordGenerator.generateName()
+        //document.querySelector("#username").value = await fetch("https://rnd.thingmaker.repl.co/name").then(r => r.text())
+      }
+    </script>
+  </body>
+</html>

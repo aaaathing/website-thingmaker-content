@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <title>429</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+  <style>
+    html{
+      width:100%;
+      height:100%;
+    }
+    body{
+      margin:0;
+      width:100%;
+      height:100%;
+    }
+    #bg{
+      position:absolute;
+      top:-50%;
+      left:-50%;
+      width:200vw;
+      height:200vh;
+      background:black;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='250px'><text x='0' y='15' fill='red' font-size='20'>TOO MANY REQUESTS</text></svg>");
+      animation:ease idk infinite 50s;
+      background-position:50% 50%;
+    }
+    #center{
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform: translateX(-50%) translateY(-50%);
+      background:lightgreen;
+      border:8px groove white;
+      border-radius:64px;
+    }
+    @keyframes idk{
+      0%{
+        background-size:10%;
+      }
+      33%{
+        transform:rotate(45deg);
+      }
+      50%{
+        background-size:300%;
+      }
+      66%{
+        transform:rotate(-45deg);
+      }
+      100%{
+        background-size:10%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="bg"></div>
+  <div id="center">
+    <h1>429: Too many requests</h1>
+    <p>
+      The limit of 10 requests per minute has been exceeded.<br>
+      You will be able to access in TIMELEFT<br>
+      Description: DESCRIPTION
+    </p>
+  </div>
+</body>
+</html>

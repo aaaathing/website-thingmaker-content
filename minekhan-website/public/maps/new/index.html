@@ -1,0 +1,142 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<base href="/minekhan-website/">
+  <link rel="stylesheet" href="maps/new/style.css">
+	<link rel="shortcut icon" href="assets/favicon.png">
+  <title>Upload a map</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+</head>
+<body>
+  <div class="box">
+    <h2>Submit Map</h2>
+    
+    <div class="input-box">
+      <!--<input type="text" name="category" id="category" autocomplete="off" required>-->
+      <select id="category">
+        <option value="none">None</option>
+      </select>
+      <label for="category">Category*</label>
+    </div>
+    <div class="input-box">
+      <input oninput="this.value = this.value.replaceAll(' ', '_')" type="text" name="name" id="name" autocomplete="off" required>
+      <label for="name">Name of map*</label>
+    </div>
+    <div class="input-box">
+      <input type="text" name="description" id="description" autocomplete="off">
+      <label for="description">Description</label>
+    </div>
+    <div class="note">Note: Files have the save code in them</div>
+    <div class="input-box">
+      <input type="text" name="code" autocomplete="off" id="code" required>
+      <label for="code">World code*</label>
+    </div>
+    <div class="input-box">
+      <input class="uploadbtn" type="file" accept=".minekhan" name="file" id="file">
+      <label for="file">Upload the world</label>
+    </div>
+    <div class="input-box">
+      <input class="uploadbtn" type="file" accept="image/*" name="thumbnail" id="thumbnail">
+      <label for="thumbnail">Thumbnail</label>
+    </div>
+    <div class="input-box">
+      <input type="text" name="thumbnailURL" autocomplete="off" id="thumbnailURL">
+      <label for="thumbnailURL">Image URL for Thumbnail</label>
+    </div>
+    <center><input type="button" value="Save" onclick="var me = this; this.value = 'Saving...'; this.disabled = true; save(function(){me.value = 'Save'; me.disabled = false})"></center>
+    <br>
+    <span id="message"></span>
+    <br>
+    <center><h6 style="color:white ;">* Required</h6></center>
+  </div>
+
+  <script>
+    var msg = document.querySelector("#message")
+    var category = document.querySelector("#category")
+    var mapName = document.querySelector("#name")
+    var description = document.querySelector("#description")
+    var code = document.querySelector("#code")
+    var file = document.querySelector("#file")
+    var thumbnail = document.querySelector("#thumbnail")
+    var thumbnailURL = document.querySelector("#thumbnailURL")
+
+    var fr = new FileReader()
+    var fileData = null
+    file.onchange = function(){
+      fr.onload = function(){
+        fileData = fr.result
+      }
+      fr.onerror = function(e){
+        alert(e)
+      }
+      fr.readAsText(this.files[0])
+    }
+    var thumbnailData = null
+    thumbnail.onchange = function(){
+      fr.onload = function(){
+        thumbnailData = fr.result
+      }
+      fr.onerror = function(e){
+        alert(e)
+      }
+      fr.readAsDataURL(this.files[0])
+    }
+    thumbnailURL.oninput = function(){
+      thumbnailData = this.value
+    }
+    function save(onfail){
+      if(fileData){
+        try{
+          let file = JSON.parse(fileData)
+          if(!file.version || !file.id || !file.code){
+            throw "what is it?"
+          }
+        }catch(e){
+          alert("Error parsing file: "+e)
+          return
+        }
+      }
+      var body = JSON.stringify({
+        name:mapName.value,
+        code:code.value,
+        category:category.value,
+        description:description.value,
+        file: fileData,
+        thumbnail: thumbnailData
+      })
+      console.log(body)
+      fetch("/server/map",{
+        method:"POST",
+        body:body
+      }).then(r => r.json()).then(r => {
+        if(r.success){
+          location.href = "maps/map/?map="+mapName.value
+        }else{
+          msg.innerHTML = r.message
+          onfail()
+        }
+      })
+    }
+
+    fetch("/server/mapCategories").then(r => r.json()).then(r => {
+      for(let i of r){
+        let o = document.createElement("option")
+        o.textContent = i.replace(/[A-Z]/g, " $&").replace(/./, c => c.toUpperCase())
+        o.value = i
+        category.appendChild(o)
+      }
+    })
+  </script>
+</body>
+</html>

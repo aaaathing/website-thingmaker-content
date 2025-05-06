@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/common.css">
+  	<link href='https://fonts.googleapis.com/css?family=Aclonica' rel='stylesheet'>
+  	<title>Search</title>
+    <style>
+      body{
+        font-family:sans-serif;
+      }
+
+      #back{
+        cursor:pointer;
+      }
+      #back:hover{
+        color:blue;
+      }
+      #logo{
+        height:50px;
+      }
+      #logo, #title{
+        display:inline-block;
+        vertical-align:middle;
+      }
+
+      .search-container{
+        float:right;
+      }
+      .search-container input{
+        border:1px solid black !important;
+      }
+
+      #results, #message{
+        margin:0 20%;
+      }
+
+      .resultContainer{
+        margin-top:30px;
+        font-size:15px;
+      }
+      .resultContainer a{
+        font-size:20px;
+      }
+      .resultContainer .description{
+        color:#4d5156;
+      }
+      body[theme=dark] .resultContainer .description{
+        color:#bdc1c6;
+      }
+
+      a{
+        text-decoration:none;
+      }
+      a:hover{
+        text-decoration:underline;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+	<!-- ©, by thingmaker. thingmaker.us.eu.org -->
+  <body>
+    <span id="back" onclick="if(history.length > 1){history.back()}else{location.href='/'}">&lt; back</span>
+    <img id="logo" src="/favicon.ico" alt="logo">
+    <h1 id="title">Search</h1>
+    
+    <div class="search-container">
+      <form action="/search">
+        <input type="text" placeholder="Search again..." name="q" id="q"><!--remove spaces
+     --><button type="submit">🔎</button>
+      </form>
+    </div><br>
+    <span id="message"></span>
+    <div id="results"></div>
+    <script>
+      const urlParams = new URLSearchParams(location.search)
+      var q = urlParams.get("q") || ""
+
+      var msg = document.querySelector("#message")
+      var res = document.querySelector("#results")
+      var hiddenSpan = document.createElement("span")
+      
+      if(q){
+        document.title = q+" - Search"
+        document.querySelector("#q").value = q
+      }
+
+      msg.innerHTML = "Loading..."
+      
+      /*var links = {
+        Home:{url:"/"},
+        Maps:{url:"/maps/browse"},
+        Wiki:{url:"/wiki"},
+        Play:{url:"/play"},
+        "Upload Map":{url:"/forum"},
+        Creators:{url:"/creators"},
+        Servers:{url:"/servers",description:"A live list of servers on MineKhan."},
+      }
+      Promise.all([
+        fetch("/server/maps").then(r => r.json()).then(data => {
+          for(i in data){
+            var map = data[i]
+            links["Map: "+map.name.replace("map:","")] = {url:"/maps/map/?map="+map.name, description:map.description}
+          }
+        }),
+        fetch("/server/wikiPages").then(r => r.json()).then(data => {
+          for(i in data){
+            var page = data[i]
+            hiddenSpan.innerHTML = page.content
+            links[page.name.replace("wiki:","")] = {url:"/wiki/page/"+page.name, description:hiddenSpan.innerText}
+          }
+        })
+      ])*/
+      const links = SEARCHDATA
+      var length = 0
+      for(var i in links){
+        var div = document.createElement("div")
+        var description = links[i].description
+        if(description){
+          hiddenSpan.innerHTML = description
+          description = hiddenSpan.textContent
+        }
+        var limit = 150
+        if(description && description.length > limit){
+          description = description.split("").slice(0,limit).join("")
+          description += "..."
+        }
+        div.classList.add("resultContainer")
+        div.innerHTML = links[i].url+"<br><a href="+links[i].url+">"+i+"</a>"+(description ? "<br><div class='description'>"+description+"</div>" : "")
+        res.appendChild(div)
+        length ++
+      }
+      if(length){
+        msg.innerHTML = length+" results were found."
+      }else{
+        msg.innerHTML = "No results were found. Try searching for something else"
+      }
+    </script>
+
+    <script src="/assets/common.js" data-usernav="true"></script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Post</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="robots" content="noindex">
+    <link rel="stylesheet" href="/assets/common.css">
+    <style>
+      h1{
+        font-size:50px;
+        margin:0px;
+      }
+      #title{
+        width:100%;
+        padding:10px 20px;
+        font-size:30px;
+      }
+      #postContent{
+        resize:vertical;
+        width:100%;
+        height:40%;
+        font-family:inherit;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+	<!-- ©, by thingmaker. thingmaker.us.eu.org -->
+  <body>
+    <div id="contentBG">
+      <div id="content">
+        <h1>Create a new post</h1>
+        <input id="title" placeholder="Title of post">
+        <br><br>
+        <!--<textarea id="postContent" placeholder="Content of post..."></textarea>-->
+        <script src="/assets/textbox.js" textboxId="postContentTextbox" textboxPlaceholder="Content of post..."></script>
+				<br>
+				Background image address: <input id="bgInput">
+        <br>
+        <pre id="error" style="color:red;"></pre>
+
+        <button onclick="post()" id="createBtn">Create post</button>
+				<!-- if you change this, change editPost -->
+      </div>
+    </div>
+    <script src="/assets/common.js" data-usernav="true"></script>
+    <script>
+      var error = document.getElementById("error")
+      function post(){
+        var title = document.getElementById("title").value
+        var content = document.querySelector("#postContentTextbox .comment-box").value
+        document.querySelector("#createBtn").disabled = true
+        fetch("/server/post",{
+          method: "POST",
+          credentials: 'include',
+          body: JSON.stringify({
+						title:title,
+						content:content,
+						bg: document.querySelector("#bgInput").value || undefined
+					})
+        }).then(res => res.json()).then(res => {
+          if(res.success){
+            location.href = res.redirect
+          }else{
+            error.innerHTML = res.message
+          }
+        }).catch(e => {
+          alert()
+          document.querySelector("#createBtn").disabled = false
+        })
+      }
+    </script>
+  </body>
+</html>

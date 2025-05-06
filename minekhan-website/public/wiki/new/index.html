@@ -1,0 +1,190 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" href="/play/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<base href="/minekhan-website/">
+  <link rel="stylesheet" href="/assets/common.css">
+  <link rel="stylesheet" href="wiki/style.css">
+  <!--<style media="screen">
+  
+  body{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-image: url(/assets/bg2.jpg);
+    background-size: cover;
+    position:relative;
+  }
+  .footer{box-sizing:border-box;}
+  .uploadbtn{
+  }
+  .box{
+    margin:auto;
+    width: 400px;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.6);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+  }
+  .box h2{
+    margin: 0 0 30px;
+    padding: 0px;
+    color: #fff;
+    text-align: center;
+  }
+  .box .input-box{
+    position: relative;
+  }
+  .box .input-box input{
+    width: 100%;
+    padding: 10px 0px;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+    border: none;
+    outline: none;
+    background: transparent;
+    border-bottom: 1px solid #fff;
+  }
+  .box .input-box label{
+    position: absolute;
+    top: 0;
+    left: 0;
+    letter-spacing: 1px;
+    padding: 10px 0px;
+    font-size: 16px;
+    color: #fff;
+    transition: .5s;
+  }
+  .box .input-box input:focus ~ label,
+  .box .input-box input:valid ~ label{
+    top: -18px;
+    left: 0px;
+    color: #03a9f4;
+    font-size: 12px;
+  }
+  .box .text-box label{
+    letter-spacing: 1px;
+    padding: 10px 0px;
+    font-size: 16px;
+    color: #fff;
+  }
+  /*.box .text-box textarea{
+    width:100%;
+    resize:none;
+    height:100px;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+    outline: none;
+    background: transparent;
+    border: 1px solid #fff;
+  }*/
+  .box input[type="button"]{
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #227be3;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor:pointer;
+  }
+  .box input[type="button"]:hover{
+    background-color: #3067b9;
+  }
+  .box input[type="button"][disabled]{
+    background:#888;
+    cursor:not-allowed;
+  }
+
+  .comment-area{
+    margin-bottom:10px;
+  }
+  </style>-->
+  <title>Wiki | Create</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+</head>
+<body>
+  <!--<div class="box">
+    <h2>Submit Wiki Page</h2>
+
+    <div class="input-box">
+      <input type="text" name="name" id="name" autocomplete="off" required oninput="this.value = this.value.replaceAll(' ','_')">
+      <label for="name">Name of page</label>
+    </div>
+    <div class="text-box">
+      <label for="content">Content of page (HTML):</label>
+      <!--<textarea name="content" id="content" autocomplete="off" required spellcheck="false">- ->
+      <script src="/assets/textbox.js" textboxId="newcontent"></script>
+    </textarea>
+    </div>
+    <div class="input-box">
+      <input type="password" name="pwd" id="pwd" autocomplete="off" required>
+      <label for="pwd">Password to delete:</label>
+    </div>
+
+    <center><input type="button" value="Save" onclick="var me = this; this.value = 'Saving...'; this.disabled = true; save(function(){me.value = 'Save'; me.disabled = false})"></center>
+    <br>
+    <span id="message"></span>
+    <br>
+    <center><h6 style="color:white ;">*Not required</h6></center>
+  </div>-->
+  <div class="bar">
+		<h1 class="title">MineKhan</h1>
+    <h1 class="wiki">Wiki</h1>
+    <center><button onclick="window.location.href = 'wiki'" class="home"><img src="https://cdn-icons-png.flaticon.com/512/93/93634.png" alt="back" class="homeimg"> Back</button></center>
+  </div>
+  <div id="content">
+    <h2>New Wiki Page</h2>
+    <label for="name">Name of page</label>
+    <input type="text" name="name" id="name" autocomplete="off" required oninput="this.value = this.value.replaceAll(' ','_')">
+    <br>
+    <label for="pwd">Password to delete:</label>
+    <input type="password" name="pwd" id="pwd" autocomplete="off" required>
+    <br>
+    <center><input type="button" value="Save" onclick="var me = this; this.value = 'Saving...'; this.disabled = true; save(function(){me.value = 'Save'; me.disabled = false})"></center>
+    <br>
+    <span id="message"></span>
+  </div>
+  <script src="/assets/common.js" data-usernav="true"></script>
+  <script>
+    var theName = document.querySelector("#name")
+    var content = document.querySelector("#newcontent .comment-box")
+    var pwd = document.querySelector("#pwd")
+    var msg = document.querySelector("#message")
+    function save(onfail){
+      fetch("/server/wikiPage", {
+        method:"POST",
+        body:JSON.stringify({
+          name:theName.value,
+          //content:content.value,
+          pwd:pwd.value
+        })
+      }).then(r => r.json()).then(data => {
+        if(data.success){
+          location.href = "/wiki/edit/"+theName.value
+        }else{
+          msg.innerHTML = data.message
+          onfail()
+        }
+      })
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<base href="/minekhan-website/">
+	<title>MineKhan | Wiki</title>
+  <link rel="stylesheet" href="/assets/common.css">
+	<link rel="stylesheet" href="wiki/style.css">
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+</head>
+
+<body>
+  <div class="bar">
+    <h1 class="title">MineKhan</h1>
+    <h1 class="wiki">Wiki</h1>
+    <div class="search-container">
+      <form action="wiki/search">
+        <input type="text" placeholder="Search wiki..." name="q"><!--remove spaces
+     --><button type="submit">🔎</button>
+      </form>
+    </div>
+    
+    <center><button onclick="window.location.href = 'wiki'" class="home"><img src="https://cdn-icons-png.flaticon.com/512/93/93634.png" alt="back" class="homeimg"> Back</button></center>
+  </div>
+  
+  <div id="content">
+    <h1 id="heading"></h1>
+  </div>
+
+  <script src="/assets/common.js" data-usernav="true"></script>
+
+  <script>
+    var data = PAGEDATA
+    var name = data.name
+    data.name = data.name.replace(/_/g, " ")
+    var content = document.getElementById("content")
+    document.querySelector("#heading").innerHTML = "View previous versions of \""+data.name+"\""
+    document.title = "View previous versions of \""+data.name+"\" | Wiki"
+    if(data.previous){
+      for(let i=0;i<data.previous.length;i++){
+        let div = document.createElement("div")
+        div.className = "previous format"
+        decompress(data.previous[i]).then(r => div.innerHTML = format(r)).catch(() => div.innerHTML = format(data.previous[i]))
+        content.appendChild(div)
+      }
+    }
+    
+    async function decompress(a){
+			a = atob(a)
+			let arr = new Uint8Array(a.length)
+			for (let i = 0; i < a.length; i++) {
+				arr[i] = a.charCodeAt(i)
+			}
+			return await new Response(new Blob([arr]).stream().pipeThrough(new DecompressionStream("gzip"))).text()
+		}
+  </script>
+</body>
+</html>

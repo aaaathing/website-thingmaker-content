@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<base href="/minekhan-website/">
+	<title>MineKhan | Wiki</title>
+  <link rel="stylesheet" href="/assets/common.css">
+	<link rel="stylesheet" href="wiki/style.css">
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+</head>
+
+<body>
+  <div class="bar">
+    <h1 class="title">MineKhan</h1>
+    <h1 class="wiki">Wiki</h1>
+    <!--<div class="search-container">
+      <form action="/search">
+        <input type="text" placeholder="Search..." name="q"><!--remove spaces
+     -- ><button type="submit">🔎</button>
+      </form>
+    </div>-->
+    
+    <center><button onclick="window.location.href = 'wiki'" class="home"><img src="https://cdn-icons-png.flaticon.com/512/93/93634.png" alt="back" class="homeimg"> Back</button></center>
+  </div>
+  
+  <div id="content">
+    <h1 id="heading"></h1>
+    <script src="/assets/textbox.js" textboxId="editContent"></script><br>
+    <button onclick="save()">Save</button>
+  </div>
+
+  <script src="/assets/common.js" data-usernav="true"></script>
+
+  <script>
+    var data = PAGEDATA
+    var name = data.name
+    data.name = data.name.replace(/_/g, " ")
+    document.querySelector("#heading").innerHTML = "Edit \""+data.name+"\""
+    document.title = "Edit \""+data.name+"\" | Wiki"
+    document.querySelector("#editContent .comment-box").value = data.content
+
+    async function save(){
+      /*const p = await Swal.fire({
+        title: 'Enter your password',
+        input: 'password',
+        inputLabel: 'Password',
+        inputPlaceholder: 'Enter your password',
+        inputAttributes: {
+          autocapitalize: 'off',
+          autocorrect: 'off'
+        }
+      })*/
+      fetch("/server/editWikiPage/"+name, {
+        method:"POST",
+        body:JSON.stringify({
+          //pwd:p.value,
+          content:document.querySelector("#editContent .comment-box").value
+        })
+      }).then(r => r.json()).then(r => {
+        if(r.success){
+          onbeforeunload = null
+          location.href = "wiki/page/"+name
+        }else{
+          Swal.fire({
+            title: "Alert!",
+            text: r.message
+          })
+        }
+      }).catch(e => {
+        Swal.fire({
+          title: "Error!",
+          text:e
+        })
+      })
+    }
+
+    onbeforeunload = function(){return false} //ask before reloading or closing
+    
+    /*fetch("/server/wikiPages").then(r => r.json()).then(pages => {
+      var html = ""
+      for(var p of pages){
+        var selected = p === name ? "selected" : ""
+        /*if(p.required){
+          html += "<a class='pagelink "+selected+"' href='/wiki/required-page/"+p.name+"'>"+format(p.name)+"</a>"
+        }else{*-/
+        html += "<a class='pagelink "+selected+"' href='/wiki/page/"+p+"'>"+format(p.replace(/_/g, " "))+"</a>"
+        /*html += "<div class='page'>"
+        html += "<a href='/wiki/page/"+p.name+"'><h1>"+p.name+"</h1></a>"
+        if(p.user) html += "Author: "+p.user
+        html += "</div>"*-/
+      }
+      document.querySelector("#pages").innerHTML = html
+    })*/
+  </script>
+</body>
+</html>

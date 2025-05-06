@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Posts</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/common.css">
+    <style>
+      .navbar a[nav=posts]{
+        background:gray;
+      }
+      .box{
+        border:1px solid lightgray;
+        border-radius:5px;
+        padding:10px 20px;
+        width:100%;
+        margin-bottom:20px;
+      }
+      body[theme=dark] .box{
+        border-color:#555;
+      }
+      h1, h3{
+        margin:0px;
+      }
+      .floatright{float:right}
+      .pfp{
+        width:20px;
+        height:20px;
+        border-radius:100%;
+        border:1px solid gray;
+        vertical-align:middle;
+      }
+    </style>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+	<!-- ©, by thingmaker. thingmaker.us.eu.org -->
+  <body>
+    <div id="contentBG">
+      <div id="content">
+        <h1 id="username">Posts</h1>
+        <a href="/createPost">New post</a>
+        <br><br>
+        <a onclick="showHistory(this)">Show post history</a>
+        <br><br>
+        <div id="skeleton">
+          <div class="box">
+            <span style="width:10%;" class="skeletonText">&nbsp;</span><br>
+            by <span style="width:5%;" class="skeletonText">&nbsp;</span>
+          </div>
+          <div class="box">
+            <span style="width:15%;" class="skeletonText">&nbsp;</span><br>
+            by <span style="width:7%;" class="skeletonText">&nbsp;</span>
+          </div>
+          <div class="box">
+            <span style="width:8%;" class="skeletonText">&nbsp;</span><br>
+            by <span style="width:4%;" class="skeletonText">&nbsp;</span>
+          </div>
+          Loading...
+        </div>
+      </div>
+    </div>
+    <script src="/assets/common.js" data-usernav="true"></script>
+    <script>
+     /* function reverse(arr){
+  let reverse = JSON.parse(string)[0]
+        reverse.reverse()
+       return(JSON.stringify(reverse))
+        console.log(reverse)
+        console.log(JSON.stringify(reverse))
+      }*/
+      var content = document.getElementById("content")
+      fetch("/server/posts").then(r => r.json()).then(async data => {
+        data.forEach(r => {
+          var div = document.createElement("div")
+          div.className = "box"
+          div.id = r.id
+          div.innerHTML = `<a href="/post?id=${r.id}">${sanitize(r.title)}</a> <span class="floatright">${timeString(r.timestamp)}</span> <br>by <a href="/user?user=${r.username}" class="user"><img class="pfp" src="/server/pfp/${r.username}"  loading="lazy"> ${r.username}</a>`
+          content.appendChild(div)
+          enableUserPopup(div.querySelector(".user"), r.username)
+        })
+        document.querySelector("#skeleton").classList.add("hidden")
+
+        window.showHistory = function showHistory(after){
+          if(document.getElementById('postHistory')) return
+          let div = document.createElement("div")
+          div.id = "postHistory"
+          div.className = 'timeline'
+          /*div.innerHTML = `
+<div style="left:25%;background:red;"></div>
+`*/
+          let oldest = Infinity, newest = -Infinity
+          for(let post of data){
+            oldest = Math.min(oldest,post.timestamp)
+            newest = Math.max(newest,post.timestamp)
+          }
+          let html = ""
+          for(let post of data){
+            let color = stringToColour(post.username||"")
+            html += `<div class="glow" style='--color:${color};left:${map(post.timestamp,oldest,newest,0,100)}%;'></div>
+<div style='background:${color};left:${map(post.timestamp,oldest,newest,0,100)}%;'>
+<div class='popup'><span>
+${post.title}<br>
+${timeString(post.timestamp)}<br>
+by ${post.username}
+</span></div>
+</div>
+`
+          }
+          div.innerHTML = html
+          after.parentNode.insertBefore(div,after.nextSibling)
+        }
+      })
+      function map(v, min, max, min2, max2){
+        return min2 + (max2 - min2) * ((v - min) / (max - min));
+      }
+      var stringToColour = function(str) {
+        var hash = 0;
+        for (var i = 0; i < str.length; i++) {
+          hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        var color = (hash/100)
+        color = color-Math.floor(color/3)*3
+        if(color < 1){
+          color = `rgb(${(1-color)*255},${color*255},0)`
+        }else if(color < 2){
+          color = `rgb(0,${(1-(color-1))*255},${(color-1)*255})`
+        }else{
+          color = `rgb(${(color-2)*255},0,${(1-(color-2))*255})`
+        }
+        return color
+      }
+    </script>
+  </body>
+</html>

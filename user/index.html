@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="robots" content="noindex">
+    <link rel="stylesheet" href="/assets/common.css">
+    <style>
+      #boxs{
+        display: flex;
+        flex-direction:row;
+        flex-flow: row wrap;
+      }
+      .box{
+        border:1px solid lightgray;
+        border-radius:5px;
+        padding:10px;
+        background:#fafafa;
+        flex-grow:1;
+        margin:8px;
+      }
+      body[theme=dark] .box{
+        background:#252525;
+      }
+      .box h2, .box h3{
+        margin:0px;
+        margin-bottom:10px;
+      }
+      #BGImg{
+        width:100%;
+        height:150px;
+        background:lightgray;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+      }
+      #notExsist{
+        padding:10px;
+        height:calc(100% - 47px);
+      }
+      body[theme=dark] #notExsist{
+        background:#222;
+      }
+      #content{
+        height:100%;
+      }
+      h1{
+        margin:10px 0px;
+        vertical-align: top;
+      }
+      #pfp{
+        width:100px;
+        height:100px;
+        border-radius:100%;
+        border:1px solid gray;
+        margin-right:40px;
+        float:left;
+      }
+      #top{
+        background:white;
+        padding:10px 20px;
+        overflow: auto;
+      }
+      body[theme=dark] #top{
+        background:#333;
+      }
+      #bio{
+        display:block;
+        clear:left;
+        margin-top:20px;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+	<!-- ©, by thingmaker. thingmaker.us.eu.org -->
+  <body>
+    <div id="contentBG" class="fullWidth">
+      <div id="BGImg"></div>
+      <div id="top">
+        <img id="pfp">
+        <h1 id="username" style="display:inline-block;">Someone's profile</h1><br>
+        <div id="vote"></div>
+        <span id="created"></span><br>
+        <span id="active"></span><br>
+        <span id="bio"></span>
+      </div>
+      <div id="content">
+        <div id="boxs">
+          <div class="box" id="posts">
+            <h2>Posts</h2>
+            <span id="postsContent"><span class="skeletonText" style="width:30%;">&nbsp;</span></span>
+          </div>
+          <div class="box">
+            <h2>Skin</h2>
+            <canvas id="skinCanv" style="display:block;width:160px;height:320px;image-rendering:pixelated;border:1px solid black;"></canvas>
+            <div id="cape" class='hidden'>
+              <h2>Cape</h2>
+              <canvas id="capeCanv" style="display:block;width:100px;height:160px;image-rendering:pixelated;border:1px solid black;"></canvas>
+            </div>
+          </div>
+          <div class="box" class="mapsContainer" style="flex-basis:100%;">
+            <h2>MineKhan Maps</h2>
+            <span id="mapsContent"><span class="skeletonText" style="width:30%;">&nbsp;</span></span>
+          </div>
+        </div>
+        <br><br>
+        <h3 id="commentsHeader">Comments</h3>
+        <script src="/assets/textbox.js" textboxId="commentTextbox" textboxPlaceholder="Post a comment..." buttonText="Post"></script>
+        <div id="comments"></div>
+      </div>
+    </div>
+    <div id="notExsist" style="display:none;">
+      <h1>Hey! This user doesn't exsist.</h1>
+      <p>It may have been deleted or you typed the username wrong.</p>
+    </div>
+    <script src="/assets/common.js" data-usernav="true"></script>
+    <script>
+      const urlParams = new URLSearchParams(location.search);
+
+      var username = urlParams.get("user")
+      var commentEl = document.querySelector("#comments")
+      var commentBox = document.querySelector("#commentTextbox .comment-box")
+      let yourUsername, you, allComments = [], timeInterval
+      async function fetchUser(){
+        yourUsername = userInfo && userInfo.username
+        you = userInfo
+        fetch('/server/account/'+escape(unescape(username)),{
+          credentials: "include"
+        }).then(r => r.json()).then(data => {
+          if((!data) || (!username)){
+            document.querySelector("#contentBG").style.display = "none"
+            document.querySelector("#notExsist").style.display = ""
+            return
+          }
+          document.querySelector('#username').innerHTML = data.username + (data.admin ? " (Admin)" : "")
+          if(data.pfp){
+            document.getElementById("pfp").src = data.pfp
+          }
+          if(data.bg){
+            document.getElementById("BGImg").style.backgroundImage = "url('"+data.bg+"')"
+						document.body.style.setProperty("--bgImg", "url('"+data.bg+"')")
+						document.body.classList.add("bgImg")
+          }
+          if(data.timestamp){
+            document.querySelector("#created").innerHTML = "Account created: "+timeString(data.timestamp)
+          }
+          if(data.lastActive){
+            document.querySelector("#active").innerHTML = "Last active: "+timeString(data.lastActive)
+          }
+          if(data.bio){
+            document.querySelector("#bio").innerHTML = "<b>"+username+"</b> - "+format(data.bio)
+          }
+  
+          if(data.skin){
+            setSkin(data.skin)
+          }
+          if(data.cape){
+            document.querySelector("#cape").classList.remove('hidden')
+            drawCape(data.cape,capeCanv)
+          }
+
+          makeVotes(document.querySelector("#vote"),data,yourUsername)
+  
+          let comments = data.comments || []
+          document.querySelector("#commentsHeader").innerHTML = "Comments ("+comments.length+")"
+          commentEl.innerHTML = ""
+          for(var i=0; i<comments.length; i++){
+            var c = comments[i]
+            if(c.hide) continue
+            addComment(c)
+          }
+          if(timeInterval !== undefined) clearInterval(timeInterval)
+          timeInterval = setInterval(() => {
+            if(data.timestamp){
+              document.querySelector("#created").innerHTML = "Account created: "+timeString(data.timestamp)
+            }
+            if(data.lastActive){
+              document.querySelector("#active").innerHTML = "Last active: "+timeString(data.lastActive)
+            }
+            for(let c of allComments){
+              let time = document.querySelector("#comment"+c.id+" .time").innerHTML = timeString(c.timestamp)
+            }
+          },10000)
+
+          if(location.hash[0] === "#"){
+            setTimeout(() => {
+              var el = document.querySelector(location.hash)
+              if(el){
+                el.scrollIntoView({block:"center",behavior:"instant"})
+                el.style.animation = "1s linear flash"
+              }
+            }, 10)
+          }
+        })
+  
+        fetch('/server/posts/'+username,{
+          credentials: "include"
+        }).then(r => r.json()).then(data => {
+          var el = document.getElementById("postsContent")
+          el.innerHTML = ""
+          if(data.length === 0){
+            el.innerHTML += "<span style='color:gray;'>They don't have any posts.</span>"
+            return
+          }
+          data.forEach(r => {
+            el.innerHTML += `<a href="/post?id=${r.id}">${r.title}</a><br>`
+          })
+        })
+
+        fetch('/server/maps/'+username,{
+          credentials: "include"
+        }).then(r => r.json()).then(data => {
+          var el = document.getElementById("mapsContent")
+          el.innerHTML = ""
+          var a = 0
+          for(var i in data){
+            a++
+            var map = data[i]
+            el.innerHTML += `<div class="map"><a href="/maps/map?map=${map.name}">
+${map.thumbnail ? `<img src="${map.thumbnail}" class="thumbnail"><br>` : ""}
+${map.name.replace(/_/g," ")}
+</a></div>`
+          }
+          if(!a){
+            el.innerHTML += "<span style='color:gray;'>They didn't upload any maps.</span>"
+          }
+        })
+      }
+      var ws
+      function initWs(){
+        ws = new WebSocket("wss://"+location.host+"/userWs?profile="+username)
+        ws.onmessage = function(msg){
+          let packet = JSON.parse(msg.data)
+          if(packet.type === "comment"){
+            addComment(packet.data)
+          }else if(packet.type === "deleteComment"){
+            document.getElementById("comment"+packet.data).style.display = "none"
+            let idx = allComments.findIndex(r => r.id === packet.data)
+            if(idx !== -1) allComments.splice(idx,1)
+          }
+        }
+        ws.onclose = function(){
+          ws = null
+        }
+        ws.onerror = () => ws.close()
+      }
+      setInterval(() => {
+        if(!ws && navigator.onLine){
+          initWs()
+          fetchUser()
+        }
+      }, 1000)
+      fetchUser()
+      initWs()
+      function comment(c){
+        c = c || commentBox.value
+
+        fetch("/server/commentUser/"+username, {
+          method:"POST",
+          body: JSON.stringify({comment: c}),
+          credentials: 'include'
+        }).then(r => r.json()).then(r => {
+          if(r.success){
+            //addComment({id:r.id,username:yourUsername,timestamp:Date.now(),comment:c})
+            document.querySelector("#commentTextbox .comment-box").value = ""
+            document.querySelector("#commentTextbox .comment-previewBox").innerHTML = ""
+          }else{
+            document.querySelector("#error").innerHTML = r.message
+          }
+        })
+      }
+      document.querySelector("#commentTextbox .comment-button").onclick = () => comment()
+      function addComment(c){
+        var id = "comment"+c.id
+        var cel = document.createElement("div")
+        cel.classList.add("comment")
+        cel.id = id
+        cel.innerHTML =
+        "<div class='top'><a class='user' href='user?user="+c.username+"'>"
+        +"<img class='pfp' src='/server/pfp/"+c.username+"' loading='lazy'>"
+        +"<span class='username'>"+c.username+"</span></a>"
+        +"<span class='right time' style='padding:0 8px;'>"+timeString(c.timestamp)+"</span>"
+        +(yourUsername === c.username || yourUsername === username || you && you.admin ? "<a class='right' onclick='deleteComment(\""+c.id+"\")'>Delete</a>" : "")
+        +"</div>"
+        +"<div class='commentCotent format'>"+format(c.comment)+"</div>"
+        commentEl.appendChild(cel)
+        enableUserPopup(cel.querySelector(".user"), c.username)
+        allComments.push(c)
+      }
+      function deleteComment(cid){
+        var c = document.getElementById("comment"+cid)
+        fetch("/server/deleteUserComment/"+username, {
+          credentials:'include',
+          method: 'POST',
+          body: JSON.stringify({cid: cid})
+        }).then(d => d.text()).then(d => {
+          if(d === "error") return alert("error")
+          c.style.display = "none"
+          let idx = allComments.findIndex(r => r.id === cid)
+          if(idx !== -1) allComments.splice(idx,1)
+        })
+      }
+
+      var skinCanv = document.querySelector("#skinCanv"), capeCanv = document.querySelector("#capeCanv")
+      function setSkin(url){
+        var image = new Image()
+        image.onload = function(){
+          if(image.width === image.height){
+            let s = image.width/64
+            skinCanv.width = 16*s
+            skinCanv.height = 32*s
+            var ctx = skinCanv.getContext("2d")
+            ctx.drawImage(image,8*s,8*s,8*s,8*s, 4*s,0,8*s,8*s)
+            ctx.drawImage(image,44*s,20*s,4*s,12*s, 0,8*s,4*s,12*s)
+            ctx.drawImage(image,36*s,52*s,4*s,12*s, 12*s,8*s,4*s,12*s)
+            ctx.drawImage(image,20*s,20*s,8*s,12*s, 4*s,8*s,8*s,12*s)
+            ctx.drawImage(image,4*s,20*s,4*s,12*s, 4*s,20*s,4*s,12*s)
+            ctx.drawImage(image,20*s,52*s,4*s,12*s, 8*s,20*s,4*s,12*s)
+          }else{
+            alert("That's not a skin, silly.")
+          }
+        }
+        image.src = url
+      }
+      function drawCape(url,canvas){
+        if(!canvas) canvas = document.createElement("canvas")
+        
+        canvas.style.display = "block"
+        canvas.style.width = "100px"
+        canvas.style.height = "160px"
+        canvas.width = 10
+        canvas.height = 16
+        canvas.style.imageRendering = "pixelated"
+        canvas.style.border = "1px solid black"
+        var ctx = canvas.getContext("2d")
+    
+        if(url){
+          var image = new Image()
+          image.onload = function(){
+            var pixW = image.width / 64
+            var pixH = image.height / 32
+            canvas.width = pixW * 10
+            canvas.height = pixH * 16
+            ctx.drawImage(this, pixW,pixH,pixW*10,pixH*16, 0,0,canvas.width,canvas.height)
+          }
+          image.onerror = e => alert("Error! "+e)
+          image.src = url
+        }else{
+          ctx.clearRect(0,0,canvas.width,canvas.height)
+        }
+        
+        return canvas
+      }
+    </script>
+  </body>
+</html>

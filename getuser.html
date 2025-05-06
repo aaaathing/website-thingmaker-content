@@ -1,0 +1,17 @@
+<!doctype html>
+<!--used by loginPopup.js in assets-->
+Logging in
+<script>
+  var parent = window.opener || window
+  function postLogged(username){
+    parent.postMessage("logged:"+username, "*");
+  }
+  function postCanceled(){
+    parent.postMessage("canceled", "*");
+  }
+  window.onbeforeunload = postCanceled
+  fetch("/server/getuser",{credentials:'include'}).then(r => r.text()).then(r => {
+    if(r) postLogged(r)
+    else postCanceled()
+  })
+</script>

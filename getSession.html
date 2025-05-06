@@ -1,0 +1,14 @@
+<!doctype html>
+<title>Getting session...</title>
+<script>
+  const urlParams = new URLSearchParams(location.search)
+  var redirect = urlParams.get("redirect")
+  
+  var sid = SESSION
+  redirect += "#"+sid
+  if(sid){
+    location.replace(redirect)
+  }else{
+    location.replace("/login?redirect="+encodeURIComponent(location.href))
+  }
+</script>

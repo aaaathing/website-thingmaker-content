@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link href='https://fonts.googleapis.com/css?family=Aclonica' rel='stylesheet'>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+		<base href="/minekhan-website/">
+    <title>MineKhan&nbsp|&nbspMaps</title>
+    <link rel="shortcut icon" href="/play/favicon.ico">
+    <link href="maps/style.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+
+<body>
+
+<div class="header">
+  <h1><img src="/minekhan/assets/images/minekhan.png" alt="MineKhan" border="0"></h1>
+</div>
+
+<div class="row">
+  <a href="maps/new">Upload map</a><br>
+  <a href="maps/newrp">Upload resource pack</a>
+  <div class="leftcolumn" id="maps">
+    <div class="card">
+      Loading the maps.. <div class="loader"></div>
+    </div>
+  </div>
+   
+  </div>
+</div>
+
+<div class="footer">
+  <h5></h5>
+</div>
+<script src="/assets/common.js" data-usernav="true"></script>
+<script>
+  fetch("/server/maps").then(r => r.json()).then(maps => {
+    var html = ""
+    for(var i in maps){
+      let thing = maps[i]
+      if(i.startsWith("rp")){
+        html += "<div class='card'><a href='maps/rp/?rp="+sanitize(thing.name)+"'>"
+        if(thing.thumbnail) html += `<img src="${sanitize(thing.thumbnail).replace(/"/g,"&quot;")}" loading="lazy">`
+        html += "<h2>Resource pack: "+sanitize(thing.name)+"</h2></a>"
+        if(thing.user) html += "By: "+sanitize(thing.user)
+        if(thing.description) html += "<p>"+format(thing.description)+"</p>"
+        html += "</div>"
+      }else{
+        html += "<div class='card'><a href='maps/map/?map="+sanitize(thing.name)+"'>"
+        if(thing.thumbnail) html += `<img src="${sanitize(thing.thumbnail).replace(/"/g,"&quot;")}" loading="lazy">`
+        html += "<h2>Map: "+sanitize(thing.name)+"</h2></a>"
+        if(thing.user) html += "By: "+sanitize(thing.user)
+        if(thing.description) html += "<p>"+format(thing.description)+"</p>"
+        html += "</div>"
+      }
+    }
+    document.querySelector("#maps").innerHTML = html
+  })
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<meta charset='utf-8'>
+<base href="/minekhan-website/">
+<link rel="stylesheet" href='wiki/style.css'>
+<link rel="stylesheet" href='/assets/common.css'>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+
+<div class="bar">
+  <h1 class="wiki">Wiki</h1>
+  <div class="search-container">
+    <form action="wiki/search">
+      <input type="text" placeholder="Search wiki again..." name="q"><!--remove spaces
+    --><button type="submit">🔎</button>
+    </form>
+  </div>
+  
+  <center><button onclick="window.location.href = 'wiki'" class="home"><img src="https://cdn-icons-png.flaticon.com/512/93/93634.png" alt="back" class="homeimg"> Back</button></center>
+</div>
+<h1 id="what"></h1>
+<div id="pages"></div>
+<script src="/assets/common.js" data-usernav="true"></script>
+<script>
+  document.querySelector("#what").textContent = "Searched: "+new URLSearchParams(location.search).get("q")
+  var html = ""
+  let pages = SEARCHDAtA
+  for(var p of pages){
+    html += "<a class='pagelink' href='wiki/page/"+sanitize(p)+"'>"+sanitize(p.replace(/_/g, " "))+"</a>"
+  }
+  document.querySelector("#pages").innerHTML = html
+</script>

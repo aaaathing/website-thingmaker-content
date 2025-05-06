@@ -1,0 +1,105 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<base href="/minekhan-website/">
+  <link rel="stylesheet" href="maps/new/style.css">
+  <link rel="shortcut icon" href="assets/favicon.png">
+  <title>Upload a resource pack</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+</head>
+<body>
+  <div class="box">
+    <h2>Submit Resource pack</h2>
+    <span style="color:white ;">Format can be found at this <a href='wiki/required-page/Resource_Packs'>wiki page</a>.</span>
+    <div class="input-box">
+      <input oninput="this.value = this.value.replaceAll(' ', '_')" type="text" name="name" id="name" autocomplete="off" required>
+      <label for="name">Name of resource pack*</label>
+    </div>
+    <div class="input-box">
+      <input type="text" name="description" id="description" autocomplete="off">
+      <label for="description">Description</label>
+    </div>
+    <div class="input-box">
+      <input class="uploadbtn" type="file" accept=".json" name="file" id="file">
+      <label for="file">Upload the resource pack</label>
+    </div>
+    <div class="input-box">
+      <input class="uploadbtn" type="file" accept="image/*" name="thumbnail" id="thumbnail">
+      <label for="thumbnail">Thumbnail</label>
+    </div>
+    <div class="input-box">
+      <input type="text" name="thumbnailURL" autocomplete="off" id="thumbnailURL">
+      <label for="thumbnailURL">Image URL for Thumbnail</label>
+    </div>
+    <center><input type="button" value="Save" onclick="var me = this; this.value = 'Saving...'; this.disabled = true; save(function(){me.value = 'Save'; me.disabled = false})"></center>
+    <br>
+    <span id="message"></span>
+    <br>
+    <center><h6 style="color:white ;">* Required</h6></center>
+  </div>
+
+  <script>
+    var msg = document.querySelector("#message")
+    var rpName = document.querySelector("#name")
+    var description = document.querySelector("#description")
+    var file = document.querySelector("#file")
+    var thumbnail = document.querySelector("#thumbnail")
+    var thumbnailURL = document.querySelector("#thumbnailURL")
+
+    var fr = new FileReader()
+    var fileData = null
+    file.onchange = function(){
+      fr.onload = function(){
+        fileData = fr.result
+      }
+      fr.onerror = function(e){
+        alert(e)
+      }
+      fr.readAsText(this.files[0])
+    }
+    var thumbnailData = null
+    thumbnail.onchange = function(){
+      fr.onload = function(){
+        thumbnailData = fr.result
+      }
+      fr.onerror = function(e){
+        alert(e)
+      }
+      fr.readAsDataURL(this.files[0])
+    }
+    thumbnailURL.oninput = function(){
+      thumbnailData = this.value
+    }
+    function save(onfail){
+      var body = JSON.stringify({
+        name:rpName.value,
+        description:description.value,
+        file: fileData,
+        thumbnail: thumbnailData
+      })
+      fetch("/server/rp",{
+        method:"POST",
+        body:body
+      }).then(r => r.json()).then(r => {
+        if(r.success){
+          location.href = "maps/rp/?rp="+rpName.value
+        }else{
+          msg.innerHTML = r.message
+          onfail()
+        }
+      })
+    }
+  </script>
+</body>
+</html>

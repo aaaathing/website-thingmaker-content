@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Log</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/assets/common.css">
+    <style id="logstyle">
+      #log{
+        width:100%;
+        max-width:100%;
+        white-space:nowrap;
+        /*display:inline-block;*/
+				overflow:auto;
+        font:14px monospace;
+      }
+      .function{color:purple;}
+      .array{color:red;}
+      .object{color:red;}
+      .objectProperty{color:blue;}
+      body[theme=dark] .objectProperty{color:#55f;}
+      .null{color:#0aa;}
+      body[theme=dark] .null{color:#0ff;}
+      .number{color:orange;}
+      .minekhanactivity{background:yellow;}
+      body[theme=dark] .minekhanactivity{background:#980;}
+      .postactivity{background:orange;}
+      body[theme=dark] .postactivity{background:#850;}
+      .capeactivity{background:#88f;}
+      .useractivity{background:lightgreen;}
+      body[theme=dark] .useractivity{background:green;}
+      .console{color:orange; margin-right:15px;}
+      .user2activity{background:red;}
+      body[theme=dark] .user2activity{background:#a00;}
+      .editoractivity{background:cyan;}
+      body[theme=dark] .editoractivity{background:#088;}
+    </style>
+
+  </head>
+  <body>
+    <div id="contentBG">
+      <div id="content">
+        <h1>Log</h1>
+        <div id="log"></div><br><br>
+        <h3>Log options</h3>
+        <input type="checkbox" id="minekhan" checked="true">
+        <label for="minekhan">Show MineKhan activity</label>
+        <br>
+        <button onclick="load()">Reload</button><br><br>
+        Run code: <br><textarea id="runWhat"></textarea> <button onclick="runCode()">Run</button><br>
+        <button onclick="restart()">Restart server</button>
+        <button onclick="clearLog()">Clear log</button>
+      </div>
+    </div>
+    <script src="/assets/common.js" data-usernav="true"></script>
+    <script>
+      var log = document.querySelector("#log")
+			let lastTime, options
+			function loaded(r){
+				log.innerHTML = r
+				lastTime = +r.match(/time:(\d*?)(\D|$)/)[1]
+			}
+      function load(){
+        options = "?timeZone="+encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)
+        if(!document.querySelector("#minekhan").checked) options += "&nominekhan=true"
+        fetch("/server/log"+options).then(r=>r.text()).then(r => {
+          loaded(r)
+        }).catch(e => {
+          log.append(document.createElement("br"),e)
+        })
+      }
+      load()
+
+      {
+			async function getPwd(){
+				if(auth) return
+				let thepwd = (await Swal.fire({title:"password",input:"password"})).value
+				auth = "Basic "+btoa(":"+thepwd)
+			}
+      let auth
+      async function runCode(){
+        let value = document.querySelector("#runWhat").value
+        await getPwd()
+				load()
+        fetch("/server/internal/run",{
+          method:"POST",
+          body:value,
+					headers:{Authorization:auth}
+        }).then(r => r.text()).then(r => {
+          if(r !== "success") log.append(document.createElement("br"),r)
+        })
+      }
+			window.runCode = runCode
+
+      window.restart = async function restart(){
+        await getPwd()
+        let r = await fetch("/server/internal/restart",{headers:{Authorization:auth}}).then(r => r.text()).catch(e => e)
+        if(r !== "success") log.append(document.createElement("br"),r)
+      }
+			window.clearLog = async function restart(){
+        await getPwd()
+        fetch("/server/internal/clearLog"+options,{
+          method:"POST",
+          body: JSON.stringify({lastTime}),
+					headers:{Authorization:auth}
+        }).then(r => r.text()).then(async r => {
+          loaded(r)
+					let file = await showSaveFilePicker({suggestedName:"log "+new Date().toLocaleDateString(undefined,{dateStyle:"medium"})+".html"})
+					const writable = await file.createWritable()
+					await writable.write("<style>"+document.querySelector("#logstyle").textContent+"</style><div id='log'>\n"+r)
+					await writable.close()
+        }).catch(e => {
+          log.append(document.createElement("br"),e)
+        })
+      }
+      }
+    </script>
+  </body>
+</html>
