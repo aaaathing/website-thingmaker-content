@@ -12,8 +12,8 @@ channel = "stable-24_05"
 language = "nodejs"
 
 [deployment]
-run = ["sh", "-c", "sh run.sh"]
-deploymentTarget = "gce"
+run = ["sh", "-c", "node index.js"]
+deploymentTarget = "cloudrun"
 ignorePorts = false
 
 [objectStorage]

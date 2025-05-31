@@ -3,7 +3,24 @@ const client = new Client();
 
 const express = require('express');
 const app = express()
+const cors = require('cors');
+app.use(cors({
+  origin: function(origin, callback){
+    return callback(null, true);
+  },
+  credentials: true, // <= Accept credentials (cookies) sent by the client
+}))
 const router = express.Router();
+
+function sanitize(v){
+  v = v.replace(/&/g,"&amp;")
+  v = v.replace(/</g,"&lt;")
+  v = v.replace(/>/g,"&gt;")
+  v = v.replace(/"/g,"&quot;")
+  v = v.replace(/'/g,"&apos;")
+  return v
+}
+
 router.get("/saves/:u", async(req,res)=>{
 	const { ok, value, error } = await client.downloadAsText('saves:'+req.params.u+'.json');
 	if (!ok) {
@@ -21,15 +38,11 @@ router.get("/saves/:u/:id", async(req,res)=>{
 	stream.on('error',e=>{res.write(e+"");res.end()})
 	stream.pipe(res)
 })
+
+global.router=router
+require("./index-old-paths.js")
+
+router.get("/",(req,res)=>res.redirect("https://thingmaker.us.eu.org"))
+
 app.use(router)
 app.listen(8080)
-
-
-function sanitize(v){
-  v = v.replace(/&/g,"&amp;")
-  v = v.replace(/</g,"&lt;")
-  v = v.replace(/>/g,"&gt;")
-  v = v.replace(/"/g,"&quot;")
-  v = v.replace(/'/g,"&apos;")
-  return v
-}
