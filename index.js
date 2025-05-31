@@ -11,6 +11,12 @@ app.use(cors({
   credentials: true, // <= Accept credentials (cookies) sent by the client
 }))
 const router = express.Router();
+const requestIp = require('request-ip');
+app.use((req,res,next)=>{
+	let orig = req.get("origin")||req.get("host"), ref = req.get('Referrer')
+	console.log(requestIp.getClientIp(req),"|",req.method+" "+req.path,"| referrer:", ref,"|", ref===orig?"":"origin: "+orig)
+	next()
+})
 
 function sanitize(v){
   v = v.replace(/&/g,"&amp;")
