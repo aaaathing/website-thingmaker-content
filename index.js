@@ -48,9 +48,16 @@ router.get("/saves/:u/:id", async(req,res)=>{
 })
 
 global.router=router
+app.use(express.static(__dirname))
+router.get("/websitecontent/common.js", (req,res)=>{
+	res.sendFile(__dirname+"/common.js")
+})
 require("./index-old-paths.js")
 
-router.get("/",(req,res)=>res.redirect("https://thingmaker.us.eu.org"))
 
 app.use(router)
+app.use((req,res,next) => {
+	if(req.url.startsWith("/server/")) next()
+	else res.redirect("https://thingmaker.us.eu.org"+req.url)
+})
 app.listen(8080)

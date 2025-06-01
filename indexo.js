@@ -1,3 +1,4 @@
+//this was the index.js when before it was shut down (before May 2025)
 
 const help = `
 Type "help" for help

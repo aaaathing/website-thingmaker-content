@@ -1,4 +1,4 @@
-const serverBase = "https://download-thingMaker.replit.app"
+const serverBase = "" // url
 
 // some things used to be in main website /assets/common.js
 
@@ -168,7 +168,7 @@ function enableUserPopup(el,user){
         }
       },1000)
     })
-    fetch(`/server/account/${user}`).then(r => r.json()).then(r => {
+    fetch(serverBase+`/server/account/${user}`).then(r => r.json()).then(r => {
       if(!r){
         return popupContent.innerHTML = "User doesn't exist: "+user
       }
