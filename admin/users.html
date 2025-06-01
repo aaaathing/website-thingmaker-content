@@ -40,7 +40,8 @@
         <button onclick="updateBanned()">Reload banned</button>
       </div>
     </div>
-    <script src="/assets/common.js" data-usernav="true"></script>
+    <script src="/assets/common.js"></script>
+    <script src="/websitecontent/common.js"></script>
     <script>
       var list = document.getElementById("list"), search = document.getElementById("search"), searchTerm = "", users
       fetch("/server/account",{
