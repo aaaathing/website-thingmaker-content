@@ -1,5 +1,9 @@
 const serverBase = "" // url
 
+window.doLiveContent = false
+
+addBanner("This is the old version of the website. The posts and accounts and things were shut down. These won't changed much anymore, and might be gone eventually. 😥","#FFA372")
+
 // some things used to be in main website /assets/common.js
 
 function urlBase64ToUint8Array(base64String) {

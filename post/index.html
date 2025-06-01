@@ -339,14 +339,14 @@
         }
         ws.onerror = () => ws.close()
       }
-      setInterval(() => {
+      if(window.doLiveContent) setInterval(() => {
         if(!ws && navigator.onLine){
           initWs()
           fetchPost()
         }
       }, 1000)
       fetchPost()
-      initWs()
+      if(window.doLiveContent) initWs()
 
       function deletePost(){
         if(!confirm("Are you sure you want to delete this post? Don't delete too many useless but safe posts.")) return

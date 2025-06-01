@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="this website has stuff in it">
+	<link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/assets/common.css">
+	<!--<link href='https://fonts.googleapis.com/css?family=Aclonica' rel='stylesheet'>-->
+	<title>Website</title>
+
+	<style>
+/*@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap');*/
+
+/*
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: 'Open Sans', sans-serif;
+	line-height: 1.5;
+}*/
+
+.main {   
+  -ms-flex: 70%; /* IE10 */
+  flex: 70%;
+  background-color: white;
+  padding: 20px;
+}
+body[theme=dark] .main{
+  background:#111;
+}
+
+#cookie-banner {
+  position: sticky;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  width: 80%;
+  padding: 5px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #eee;
+  border-radius: 5px;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+  z-index:1;
+}
+#cookie-banner .close {
+  height: 20px;
+  background-color: #777;
+  border: none;
+  color: white;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+h2{
+  margin-bottom:2px;
+  margin-top:16px;
+}
+h3{
+  margin-bottom:2px;
+  margin-top:12px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  border:1px solid gray;
+}
+.grid-item {
+  border: 1px solid gray;
+  padding: 8px;
+  text-align: center;
+}
+
+#links{
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+#links a{
+  padding:8px 20px;
+  background:#eee;
+  display:block;
+  color:black;
+}
+#links a:hover{
+  background:#ccc;
+}
+#links a.interesting{
+  background: #dfd;
+}
+#links a.no{
+  background: #fdd;
+}
+body[theme=dark] #links a{
+  background:#222;
+  color:white;
+}
+body[theme=dark] #links a:hover{
+  background:#111;
+}
+body[theme=dark] #links a.interesting{
+  background: #262;
+}
+body[theme=dark] #links a.no{
+  background: #622;
+}
+#links .dropdown::after{
+	display:block;
+	float:right;
+	content:"▼";
+	position:absolute;
+	top:50%;
+	right:8px;
+	translate: 0 -50%;
+}
+	</style>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+</head>
+<body>
+
+<!--<h1>Please make this website more <span style='background:#ff08'>popular</span></h1>
+<p id="more-popular">You can do that by sharing the link. If this website is more popular, it will make MineKhan <span style='background:#ff08'>more fun</span> and there may be <span style='background:#ff08'>more updates</span>. There are about 20 users on this website every day and less on weekends.</p>
+<span id="currentUsers"></span>
+<script>addEventListener("load", () => document.querySelector("#currentUsers").innerHTML = "Current amount of users in last 24 hours (on page load): "+userCount)</script>-->
+	
+  <div id="links">
+    <script>
+			function addlinks(r,container){
+        for(let i in r){
+					let contain = container
+          if(r[i].dropdown){
+						contain = document.createElement("div")
+						contain.className = "dropdown"
+						container.appendChild(contain)
+					}
+					contain.insertAdjacentHTML("beforeend","<a href='"+r[i].url+"' class='"+(r[i].no?"no ":"")+(r[i].interesting?"interesting ":"")+"'>"+i+"</a>")
+					if(r[i].dropdown){
+						let newc = document.createElement("div")
+						newc.className = "dropdown-content"
+						addlinks(r[i].dropdown,newc)
+						contain.appendChild(newc)
+					}
+        }
+			}
+addlinks({
+  "Home":{"url":"/"},
+  "Posts":{"url":"/posts"},
+  "MineKhan":{
+		"url":"/minekhan", "interesting":true,
+		"dropdown":{
+			"Offline download":{"url":"/minekhan/offdown.html"},
+			"MineKhan history":{"url":"/minekhan/history","interesting":true},
+ 	 		"MineKhan mods":{"url":"/stuff/ka/mk-mods"},
+ 	 		"MineKhan test: all update":{"url":"/minekhan/beta/allupdate/_mksrc10test.html"},
+  		"MineKhan Servers":{"url":"/minekhan/live-servers.html","description":"A live list of servers on MineKhan."},
+			"Editor":{"url":"/code%20editor/multifile/?import=%2Fminekhan%2Fminekhan.html&import=%2Fminekhan%2Fminekhan-world.js"}
+		}
+	},
+  "MineKhan Maps":{
+		"url":"/minekhan-website/maps/browse",
+		"dropdown":{
+			"Upload MineKhan Map":{"url":"/minekhan-website/maps/new"},
+			"Upload MineKhan Resource Pack":{"url":"/minekhan-website/maps/new"}
+		}
+	},
+	"MineKhan website":{"url":"/minekhan-website/"},
+  "MineKhan Wiki":{"url":"/minekhan-website/wiki"},
+  "MineKhan tools":{"url":"/tools"},
+	"History of website":{"url":"/history.html","interesting":true},
+  "to do & info":{"url":"/todo.html"},
+  "Adder":{"url":"/Adder.html"},
+  "Program browser (doesn't work anymore)":{"url":"/programBrowser.html"},
+  "Code editor":{"url":"/code%20editor/Programs.html", "interesting":true},
+  "Scratch to javascript converter":{"url":"/scratch/scratchjs.html"},
+  "Randomizer":{"url":"/random.html"},
+  "Fullscreen OS":{"url":"/fullscreen-os", "interesting":true},
+  "Multiplayer drawing":{"url":"/multiplayer", "interesting":true},
+  "Platformer":{"url":"/platformer", "interesting":true},
+  "dino":{"url":"/dino"},
+  "Fake glitchy screen":{"url":"/glitch.html"},
+  "Redstone simulator (old)":{"url":"/redstone"},
+  "Text meaning distorter":{"url":"/text-meaning-distorter"},
+  "Particle life":{"url":"/particleLife", "interesting":true},
+  "chat by TomMustBe12":{"url":"/chat"},
+  "Generate username":{"url":"/namegenerator.html"},
+  "View panorama":{"url":"/panoramas.html"},
+  "Make music":{"url":"/music","description":"A tool for making music.", "interesting":true},
+  "Python interpreter":{"url":"/code%20editor/pythoninterpreter.html", "interesting":true},
+	"Grapher":{"url":"/grapher", "interesting":true},
+	"Bitmap font generator":{"url":"/stuff/bitmap-font-generator.html"},
+	"life":{"url":"/stuff/life.html", "interesting":true},
+	"Stuff":{"url":"/stuff", "interesting":true},
+	"bending pixels":{"url":"/stuff/bending pixels.html", "interesting":true}
+},document.querySelector("#links"))
+    </script>
+  </div>
+
+  <div class="main">
+    <h2>Website (March 12, 2025)</h2>
+    <p>This is the home page of this website. You can find many things like interesting stuff and useful tools in the links above. Green background means it may be interesting.</p>
+    
+    <h2>Websites and things you may not have even known existed!</h2>
+    <a href="https://mordritch.com/">Modritch.com</a><br>
+    <a href="https://minecraft-Beta-Version-16.gameprogammer.repl.co">Classicube</a><br>
+    <a href="https://cubical.xyz">Cubical</a><br>
+    <a href="https://ludotune.com">LudoTune</a><br>
+    <a href="https://webmc.js.org">WebMC</a><br>
+    <a href="https://ellieeet123.github.io/">Pringles</a><br>
+    <a href="https://theguy888.github.io/">[ Total Seriousness. ]</a><br>
+    <a href="https://sandboxels.r74n.com/">Sandboxels</a><br>
+    <a href="https://tommustbe12.com/">tommustbe12.com</a><br>
+    <a href="https://elbozopremio.com/">elbozopremio.com</a><br>
+    <a href="https://github.com/Shawnlandis/eaglercraft/blob/main/index.html">eaglercraft for khan acadmy</a><br>
+		<a href="https://github.com/emer/emergent">emergent</a> | can be used to make AI with perception, memory, language, possibly ability to think<br>
+
+		<br><br><br>
+	<h1>Put old stuff here</h1>
+	<i>otherwise it will probably be forgotten</i>
+	<br><a href="https://thingmaker.us.eu.org/old.html">actually, read this because the one below is old</a>
+	<div>
+	<p>If you have <b>old worlds</b> from 2022 and before, you should put them <a href="/minekhan-website/maps/new">here</a>.</p>
+	<h2>How to get old worlds</h2>
+	<img src="/assets/images/Screen Shot 2022-09-02 at 8.31.12 PM.jpg" loading="lazy" width="200px">
+<div style="white-space: pre-line;">
+If you used chrome, go to <b>chrome://indexeddb-internals/#minekhan.thingmaker.repl.co</b> or <b>chrome://indexeddb-internals/#play.minekhan.repl.co</b>
+Wait for it to load
+Click download (at the bottom of the list)
+Use <a href="/save-mk-indexed-db.html">this tool</a> to get and save the worlds
+Or unzip the zip file
+
+<!--This only works if you used to go to <b>minekhan.thingmaker.repl.co</b> or <b>play.minekhan.repl.co</b>
+This also requires access to devtools.
+
+Go to minekhan.thingmaker.repl.co or the other one.
+Use proxy or extension to make it not have error.
+Open devtools by:
+	right clicking and clicking inspect
+	or pressing ctrl+shift+i or similar
+Paste this in console and optionaly check for bad things:
+<textarea>
+let or=indexedDB.open("MineKhan");or.onsuccess = e => { let db = or.result;let trans = db.transaction('worlds', "readonly");let store = trans.objectStore('worlds'); let req = store.getAll(); req.onsuccess=()=>{ for(let i of req.result){ var link = document.createElement("a"); link.download = i.data.name+'.minekhan'; link.href = URL.createObjectURL(new Blob([JSON.stringify(i.data)])); link.click(); Object.revokeObjectURL(link.href); } }}
+</textarea>
+The files should have been downloaded afterwards.-->
+</div>
+	<P>If you have screenshots or videos of <b>MineKhan</b> from <b>2022 and before</b>, it would be helpful to put them in the upload below so more history can be found.</P>
+	<input type="file" onchange="uploadit(this)">
+	<script>
+		async function uploadit(e){
+			let r
+			try{
+				r = await (await fetch('/images/'+encodeURIComponent((new Date(e.files[0].lastModified).toLocaleString())+" "+e.files[0].name), {
+					method:'POST',
+					body: await e.files[0].arrayBuffer()
+				})).json()
+			}catch(e){
+				alert(e.message)
+				return
+			}
+			if(!r.success) alert(r.message)
+		}
+	</script>
+	</div>
+	<br><br>
+
+
+<!--		<h2>links</h2>
+<pre>
+https://minecraft1123.glitch.me/
+16f81.csb.app
+https://minecrafterikedition.glitch.me/
+https://minekhan2.w3spaces.com/
+https://minekhan.glitch.me/
+</pre>-->
+
+    <h2>Website Stats</h2>
+    <a id="showStats">Show</a>
+    <p id="users-inactive">Note: Most users are inactive</p>
+    <span id="users"></span>
+    <a id="showUsers" style="display:none;">Show</a><br>
+    <span id="posts"></span><br>
+    <span id="worlds"></span><br>
+    <span id="maps"></span>
+
+    <h2>MineKhan videos</h2>
+		<b>These ones are disappearing. archive them before they disappear!!</b>
+    <p>If it says Minecraft it actually means MineKhan</p>
+    <div class="grid-container" id="videos"></div>
+    <a onclick="showVideos();this.remove()">Show All</a><br>
+    <script>
+      //[url,name,author,disabled(can be string)]
+      const videos = [
+        ["https://www.youtube.com/watch?v=de02AA9P_zE","Is sand parkour possible in MineKhan?","ElectricAlpha (DaErroredGhostie)"],
+        ["https://www.youtube.com/watch?v=L2cn9fplrF4","MineKhan Part 1!","3ruh"],
+        ["https://www.youtube.com/watch?v=tbjM-lDFuvY","Join REDMONSTER12 is server in Minekhan","Ibraxlander (IBRAXLANDER)",true],
+        ["https://www.youtube.com/watch?v=sghbjUjANwY","MINEKHAN LIVE","3ruh",true],
+        ["https://www.youtube.com/watch?v=GUonYMlV0CA","My first time playing the actual Minecraft but it is Minekhan alpha","UNSINKABLEGAMING",true],
+        ["https://www.youtube.com/watch?v=R8TjHq4cu6g","Minekhan alpha Survival part 2!","UNSINKABLEGAMING",true],
+        ["https://www.youtube.com/watch?v=6ZFiI9Is0jM","Minekhan alpha part 2 or was it 3?","UNSINKABLEGAMING",true],
+        ["https://www.youtube.com/watch?v=hIL6x1MrdZw","Minekhan Survival multiplayer!","UNSINKABLEGAMING",true],
+        ["https://www.youtube.com/watch?v=5q91Rnf_68U","Survival turned to creative!","UNSINKABLEGAMING",true],
+        ["https://www.youtube.com/watch?v=wnCEl8IMYOA","SO FRUSTRATING!","UNSINKABLEGAMING",true],
+        ["https://www.youtube.com/watch?v=7GUjVk0V9po","I ENDED MINEKHAN ALPHA HERE","UNSINKABLEGAMING",true],
+        ["https://www.youtube.com/watch?v=rYd_XI09tws","I jump from 1,000 blocks!","SpaceSoldier"],
+        ["https://www.youtube.com/watch?v=oZ1Gd7jP4S8","Come Join me in Minekhan (Join now!)","Zenith"],
+        ["https://www.youtube.com/watch?v=TWcEySJsxuc","Come Join me in Minekhan (Join now!) Part 1","Zenith"],
+        ["https://www.youtube.com/watch?v=5k9Qr4wGwWY","Stupid Houses","DisDudeElec",true],
+        ["https://www.youtube.com/watch?v=yS2X8xzOKpw","The Amethyst Song","DisDudeElec"],
+        ["https://www.youtube.com/watch?v=cLuUYbSZxEg","Web Minecraft is so broken | Bridging","Viper088",true],
+        ["https://www.youtube.com/watch?v=Hoku_wNPb9Q","POV: you play mc on a potato pc","Viper088",true],
+        ["https://www.youtube.com/watch?v=ewGSlYjMXTc","Reviewing Thingmaker's Minecraft...I mean minekhan","S̶i̶n̶i̶s̶t̶e̶r̶R̶e̶w̶i̶n̶d̶",true],
+        ["https://www.youtube.com/watch?v=DuspexkBk-A","MineKhan Alpha 1.0.4 pt 2","S̶i̶n̶i̶s̶t̶e̶r̶R̶e̶w̶i̶n̶d̶",true],
+        ["https://www.youtube.com/watch?v=0cunBXfubPI","How To Break Into A Movie Theater - Minekhan","LearnTubeMPA"],
+        ["https://www.youtube.com/watch?v=hl_aUXgUs4U","Welcome to the Channel","Epic",true],
+        ["https://www.youtube.com/watch?v=eg27lsU7COU","Minekhan Cave Base","Epic",true],
+        ["https://www.youtube.com/watch?v=JqI9fmaxQ60","Minekhan volcano","Big Brain Baka (BakaBoi)",true],
+        ["https://www.youtube.com/watch?v=ORJEo7i3m7Y","Minekhan volcano (Correct Time)","Big Brain Baka (BakaBoi)",true],
+        ["https://www.youtube.com/watch?v=YU3mJGILz6Y","Minekhan castle","Big Brain Baka (BakaBoi)",true],
+        ["https://www.youtube.com/watch?v=ZQEkbfFHENE","Bridging in Minecraft","goldenPvP"],
+        ["https://www.youtube.com/watch?v=lZQlGpCu3Ok","Different Types of Houses Portrayed by Minecraft","goldenPvP",true],
+        ["https://www.youtube.com/watch?v=VPxF79acISc","Blowing Up a Lake in Minecraft *insane lag*","goldenPvP"],
+        ["https://www.youtube.com/watch?v=PcJa5YcJJd8","minekhan","ShardPlayzz"],
+        ["https://www.youtube.com/watch?v=TgpTNpS3UQE","Why Is There a Snow Biome Next To The Desert in Minecraft?","goldenPvP"],
+        ["https://www.youtube.com/watch?v=Mw8DxXSWNxk","Building a House in Minecraft Survival","goldenPvP"],
+        ["https://www.youtube.com/watch?v=y1_cu6GfMUQ","HOW TO GET BEST FAN MADE MINECRAFT | GAMING WITH JORDAN","Jordans World2.6"],
+        ["https://www.youtube.com/watch?v=wYc75X6g5S8","Server Chaos + Testing out Super TNT in Minecraft","goldenPvP"],
+        ["https://www.youtube.com/watch?v=Wnpn6D1QqNk","Minekhan in the nether","ShardPlayzz"],
+        ["https://www.youtube.com/watch?v=Deet9ZkT63U","MineKhan Piston Door","Epic",true],
+        ["https://www.youtube.com/watch?v=d7jBvTK3zW4","MLG Water Bucket Clutch Goes Terribly Wrong...","goldenPvP"],
+        ["https://www.youtube.com/watch?v=dfUBXMv9zHI","MLG Clutching With A Portal Block *cursed*","goldenPvP"],
+        ["https://www.youtube.com/watch?v=o8IXJUFOhQc","I Survived The Lava Bucket Clutch!!! (No Hacks)","goldenPvP"],
+        ["https://www.youtube.com/watch?v=yCYs_LqL0lY","Cursed Minecraft? Water & Lava Blocks","goldenPvP"],
+        ["https://www.youtube.com/watch?v=2h0tYlJKPTU","Imagine Slipping Off A Block On Stream😅😂","goldenPvP"],
+        ["https://www.youtube.com/watch?v=MPgtGZVHNos","Ladder MLG Clutch *impossible*","goldenPvP"],
+        ["https://www.youtube.com/watch?v=MXux9J4MtIk","Minecraft but There Are Tomato Plants (Demonstration)","goldenPvP"],
+        ["https://www.youtube.com/watch?v=qBh98yfsLns","Parkour Lava Bucket Clutch","goldenPvP"],
+        ["https://www.youtube.com/watch?v=2IUkS_0V7RI","Parkour + Portal Clutch Fail","goldenPvP"],
+        ["https://www.youtube.com/watch?v=gU0uNU_r6Jc","Build Limit Water Block Clutch (kinda cursed)","goldenPvP"],
+        ["https://www.youtube.com/watch?v=pIN_gzhvlUI","Testing Water Buckets in Minecraft JS (#1)","goldenPvP"],
+        ["https://www.youtube.com/watch?v=fNoAz0Y262c","This isn't supposed to happen..: Minecraft JS Bucket Clutch (#2)","goldenPvP"],
+        ["https://www.youtube.com/watch?v=YRwOevvN39M","Cobwebs exposed?","goldenPvP"],
+        ["https://www.youtube.com/watch?v=yXb4zrUIAWs","Do NOT try this...","SpaceSoldier248"],
+        ["https://www.youtube.com/watch?v=FP6-ViHZEQs","Jumping from 256 in survival mode","SpaceSoldier248"],
+        ["https://www.youtube.com/watch?v=0ka0OKlyKVo","I almost killed myself on accident in my bedwars world!","SpaceSoldier248"],
+        ["https://www.youtube.com/watch?v=3TgaEHKI_jI","5 Days on a MineKhan Island (Day 1)","goldenPvP"],
+        ["https://www.youtube.com/watch?v=skSS_KTvtj4","5 Days on a MineKhan Island (Day 2)","goldenPvP"],
+        ["https://www.youtube.com/watch?v=ml2aP5RaYRE","5 Days on a MineKhan Island (Days 3-5)","goldenPvP"],
+        ["https://www.youtube.com/watch?v=WkdPIKzQVwQ","How to Build a Flying Machine (in MineKhan)","goldenPvP"],
+        ["https://www.youtube.com/watch?v=ML3dW2XZThY","Minekhan Livestream","Jordans World2.6"],
+        ["https://www.youtube.com/watch?v=8TSlOg0c0RE","PvPing Players in MineKhan (ft. Epic) | Part 1","goldenPvP"],
+        ["https://www.youtube.com/watch?v=KTUfpl90yns","Vine Clutch Gone Wrong...","goldenPvP"],
+        ["https://www.youtube.com/watch?v=MbzHoLQZD00","PvPing Players in MineKhan (ft. Epic) | Part 2","goldenPvP"],
+        ["https://www.youtube.com/watch?v=jwCDfshDLdU","PvPing Players in MineKhan (ft. Epic) | Part 3","goldenPvP"],
+        ["https://www.youtube.com/watch?v=d1ClELOnVA4","Me Trying to do Parkour:","goldenPvP"],
+        ["https://www.youtube.com/watch?v=Qv52-FGda6k","When you see a random UFO in the city...","goldenPvP"],
+        ["https://www.youtube.com/watch?v=0hCWEV80nZs","Flying on a Flying Machine from a Volcano to Sea Level","goldenPvP"],
+        ["https://www.youtube.com/shorts/2fLvICuqBt0","Minekhan End Dimension?","Epic"],
+        ["https://www.youtube.com/shorts/vHTyy5qjNWg","TNT cannon trap","Epic"],
+        ["https://www.youtube.com/watch?v=8L7papE-RY8","THE END HAS ARRIVED TO MINEKHAN! | MineKhan Update Walkthrough","goldenPvP","!!!COPYRIGHTED!!!"],
+        ["https://www.youtube.com/shorts/dnh1_kpl1oI","Treasure temple","Epic"],
+        ["https://www.youtube.com/watch?v=lTKsruhv-Gg","SUCCESSFUL Water Bucket MLG!!!","goldenPvP"],
+        ["https://www.youtube.com/watch?v=zZHRQdm2iWA","I FOUND OUT What a THATCH is used for in MINEKHAN!","goldenPvP"],
+        ["https://www.youtube.com/watch?v=iYvUTuc7n38","I fooled my sister with goodies in minekhan alpha 1.0.5","Tu and Thien Borden gaming"],
+        ["https://www.youtube.com/watch?v=bFsEghnmrPQ","Minekhan gameplay 😂 lol","giffyfolly",true],
+        ["https://www.youtube.com/watch?v=l7aIzncbQ_4","Minekhan gameplay pt 2","giffyfolly",true],
+        ["https://www.youtube.com/watch?v=ukMSGQ2xKyo","I SPICED UP The End in MINEKHAN!","goldenPvP"],
+        ["https://www.youtube.com/watch?v=6X7kS5MJ30s","MINEKHAN *NEW* 1.19 BLOCKS?","goldenPvP"],
+        ["https://www.youtube.com/watch?v=NAPnq1XQ5Mo","I Built a CAR in Minekhan!","goldenPvP"],
+        ["https://www.youtube.com/watch?v=CNnYN2S4V-4","Sitting in Minekhan","Epic",true],
+        ["https://www.youtube.com/watch?v=-kr-tKopg60","thingMaker's MineKhan gameplay","Big Brain Baka (BakaBoi)",true],
+        ["https://www.youtube.com/watch?v=GiOX3YzWKEk","SURVIVING MINEKHAN || NIGHT ONE","Loco"],
+        ["https://www.youtube.com/watch?v=gcc7GBtOVXg","Surviving MineKhan || Part 2","Loco"],
+        ["https://www.youtube.com/shorts/j16BGkv2Ceo","The highest jump in Minekhan","Epic"],
+        ["https://www.youtube.com/shorts/yT9VH0aqecI","Minekhan Archery Range","Epic"],
+        ["https://www.youtube.com/watch?v=wWQBjmKII3w","Making The Skeld Among Us Map on MineKhan!","Raeshawna",true],
+        ["https://www.youtube.com/watch?v=J3ayAH-Kpys","Playing MineKhan Alpha 1.0.5 at night [Crackersthehacker]","Crackersthehacker"],
+        ["https://www.youtube.com/watch?v=wnGxMHNDgpM","I played Minekhan Alpha 1.0.5 again but it wasn't at night","Crackersthehacker"],
+        ["https://www.youtube.com/watch?v=JEpdFQwadtA","Me and my friends","Destyana Booth's (Candy)",true],
+        ["https://www.youtube.com/watch?v=LKW3DS3xbrs","Chillin with my Homies","Destyana Booth's (Candy)",true],
+        ["https://www.youtube.com/watch?v=t8-wv3nGtLE","My House in Minekhan","Destyana Booth's (Candy)",true],
+        ["https://www.youtube.com/watch?v=fVy81jTntUw","Playing MineKhan Alpha 1.0.5 again because I dont know what else to do...","Crackersthehacker"],
+        ["https://www.youtube.com/watch?v=T2PJVl5azyo","me doing parkour","SlowMotionKid10 (bobtheslob12345)",true],
+        ["https://www.youtube.com/watch?v=baUcdvXa1QY","for banned on minekhan","SlowMotionKid10 (bobtheslob12345)"],
+        ["https://www.youtube.com/watch?v=jVUklUFae3c","MineKhan's House Building Contest! [By Raeshawna]","Raeshawna",true],
+        ["https://www.youtube.com/watch?v=2TflIBRSYjU","I found off brand minecraft","ibuypower"],
+        ["https://www.youtube.com/watch?v=yiuknu9jqtA","thingMaker's MineKhan trial","Bolu Olapoju",true],
+        ["https://www.youtube.com/watch?v=-kr-tKopg60","Trying out New MineKhan Features (MOBS AND DAYLIGHT SENSORS)","Big Brain Baka (BakaBoi)",true],
+        ["https://www.youtube.com/watch?v=7S6hhxFY5T8","The Best Ripoff Minecraft Game","Devozy",true],
+        ["https://www.youtube.com/watch?v=6ZXXlJTMhKQ","MineKhan Build Battle!!!","Crackersthehacker"],
+        ["https://www.youtube.com/watch?v=t9U2OsNXVFY","How to use blockTxt and blockImg in MineKhan Alpha 1.0.5!","akimball08 (TomMustBe12) | Note: the code in the video is originally made by thingMaker"],
+        ["https://www.youtube.com/watch?v=G5PIxwCbdEM","Just a normal Parkour Day in MineKhan Alpha 1.0.5","akimball08 (TomMustBe12)"],
+        ["https://www.youtube.com/watch?v=G5PIxwCbdEM","I Do Something Dumb","ThrustBacon"],
+        ["https://www.youtube.com/watch?v=tOdM_t7JZ6c","KhaHack - Best MineKhan Hacked Client","akimball08 (TomMustBe12)"],
+        ["https://www.youtube.com/watch?v=yj_4_Zo9YB4","MC lets play ep 1","Doodle  2",true],
+        ["https://www.youtube.com/watch?v=4I2j3_UYs7g","Building The Among Us Skeld Map On MineKhan Part 2","Raeshawna",true],
+        ["https://www.youtube.com/watch?v=elMAlLd2roI","Screen recording 2023 01 14 9 32 25 PM","DarkWolf",true],
+        ["https://www.youtube.com/watch?v=T0-Hx3eWcqA","Greifing tutorial #1 ig","DarkWolf",true],
+        ["https://www.youtube.com/watch?v=XYzkuXhJYwU","Cater SMP","DarkWolf",true],
+        ["https://www.youtube.com/watch?v=18e6027SSOA","Spooky World Showcase","DarkWolf",true],
+        ["https://www.youtube.com/watch?v=GyqocpnG4CE","Hacks & Exploits for minekhan.","DarkWolf",true],
+        ["https://www.youtube.com/watch?v=xI8VzyC-DMk","Some Stuff.","DarkWolf",true],
+        ["https://www.youtube.com/watch?v=a2S5CjnjPKc","Steveee","DarkWolf",true],
+        ["https://www.youtube.com/watch?v=qFkPCJPUnPc","The Flavian Ampitheater DarkWolf mk edtion","DarkWolf",true],
+        ["https://www.youtube.com/watch?v=O6mctlCUqNA","oinky","DarkWolf",true],
+        ["https://www.youtube.com/watch?v=3IFBk4oWv1I","Khahack","DarkWolf",true],
+        ["https://www.youtube.com/watch?v=EmxKxnqlTy0","MineKhan Things You NEVER Would've Known Without This","TomMustBe12"],
+        ["https://www.youtube.com/watch?v=QCTsKoCD9vo","ep.1 mine khan","SCUFFED (justabot)"],
+        ["https://www.youtube.com/watch?v=1-iT8RcCqLw","ep.2 minekhan lets play","SCUFFED (justabot)"],
+        ["https://www.youtube.com/watch?v=l2gyNdRVnrI","Skyblock","DarkWolf0"],
+        ["https://www.youtube.com/watch?v=IzLpOlntPLk","Playing MineKhan Alpha 1 0 5","Mega Shark"],
+        ["https://www.youtube.com/watch?v=NvKTV2qju0s","MineKhan but killing my self in the water","Mega Shark"],
+        ["https://www.youtube.com/watch?v=gDKbjBg5n3E","Plating MineKhan Alpha 1 0 5 Part2","Mega Shark"],
+        ["https://www.youtube.com/watch?v=1ZKcizTRkas","Building a machine in BED WARS","Mega Shark"],
+        ["https://www.youtube.com/watch?v=gFe_SwRjXOU","join me on minekhan (Link in description)","NoobBuyGuy",true],
+        ["https://www.youtube.com/watch?v=oqlXipxYFfM","MLG","GuestSneezePlayZ"],
+        ["https://www.youtube.com/watch?v=K8BuOyGtAaE","How Nether Portals Were Discoverd","GuestSneezePlayZ"],
+        ["https://www.youtube.com/watch?v=u8LxZ8uuYIs","Bed Wars machine Land 3","Mega Shark"],
+        ["https://www.youtube.com/watch?v=YYY8bsCzZno","MineKhan Cinematic Shot","TomMustBe12"],
+        ["https://www.youtube.com/watch?v=uGUMkrjF3NA","minekhan - tm3z (video 1)","Salazar Belaeze"],
+        ["https://www.youtube.com/watch?v=0l0wCGh8e-E","GIANT ALEX CAUGHT ON CAMERA","GuestSneezePlayZ"],
+        ["https://www.youtube.com/watch?v=6UgSGyFLLiY","Umm The Crab Is Here I Guess So We Dont Need The Mob Vote","GuestSneezePlayZ | Note: It may not look like MineKhan, but if you look closely, it is."]
+      ].reverse()
+      let videosEl = document.querySelector("#videos")
+      function showVideos(amount){
+        videosEl.innerHTML = ""
+        let j=0
+        for(let i of videos){
+          j++
+          if(amount && j>amount) break
+          let div = document.createElement("div")
+          div.className = "grid-item"
+          let a = document.createElement("a")
+          let image
+          if(i[0].startsWith("https://www.youtube.com/watch?v=")) image = "https://img.youtube.com/vi/"+i[0].replace("https://www.youtube.com/watch?v=","")+"/default.jpg"
+          if(i[0].startsWith("https://www.youtube.com/shorts/")) image = "https://img.youtube.com/vi/"+i[0].replace("https://www.youtube.com/shorts/","")+"/default.jpg"
+          if(/*!i[3] && */image){
+            let img = document.createElement("img")
+            img.src = image
+            a.appendChild(img)
+            a.appendChild(document.createElement("br"))
+          }
+          a.appendChild(document.createTextNode(i[1]))
+          a.href = i[0]
+          //if(i[3]) a.setAttribute("disabled","")
+          div.appendChild(a)
+          /*if(i[3]){
+            let s = document.createElement("span")
+            if(typeof i[3] === "string") s.innerHTML = "<h3 style='color:red;'>"+i[3]+"</h3>"
+            else s.innerHTML = "<h2>Unavailable</h2>"
+            div.appendChild(s)
+          }*/
+          div.appendChild(document.createElement("br"))
+          div.appendChild(document.createTextNode("By "+i[2]))
+          videosEl.appendChild(div)
+        }
+      }
+      showVideos(6)
+    </script>
+
+    <h2>MineKhan on other places</h2>
+    <a href="https://www.reddit.com/r/PhoenixSC/comments/x5qz55/minecraft_ripoffs_are_weird/">https://www.reddit.com/r/PhoenixSC/comments/x5qz55/minecraft_ripoffs_are_weird/</a><br>
+    <a href="https://www.deviantart.com/yasmintt/art/Minekhan-repl-co-pics-945471226">https://www.deviantart.com/yasmintt/art/Minekhan-repl-co-pics-945471226</a><br>
+    <a href="https://www.deviantart.com/yasmintt/art/Minekhan-Play-with-anybody-945480121">https://www.deviantart.com/yasmintt/art/Minekhan-Play-with-anybody-945480121</a><br>
+    
+    <h2>Highest records</h2>
+    <span id="records"></span>
+
+    <!--<h2>Recent updates for MineKhan</h2>
+    <div id="updates"></div>
+
+    <h2>Want to make a external server on MineKhan?</h2>
+    <p>It's the one that stays on and doesn't need you to keep it open.</p>
+    <p>Step 1: Set up a node js server</p>
+    <p>Step 2: Follow <a href='https://www.npmjs.com/package/minekhan-server'>these instructions</a>.</p>
+    <p>Step 3: Ask to put it on the server list.</p>-->
+<!--<br><br><br><br>
+    <div style="overflow:hidden;width:300px;height:200px;"><img style="float: right;" src="https://img.youtube.com/vi/oqlXipxYFfM/maxresdefault.jpg" loading="lazy"><a href="https://guestsneezeplayz.itch.io/falconcraft">link to thing without credit</a></div>
+  </div>-->
+
+		<a href="/history.html">
+		<h2>History</h2>
+		<p>Find out what happened on this before.</p>
+		</a>
+</div>
+
+<div id="cookie-banner" style="display: none">
+  <p>
+    This website uses cookies for log in and because google analytics uses cookies.<br>
+    Click &times; to close and don't show again, which will use local storage.
+  </p>
+  <button class="close">&times;</button>
+</div>
+<script>
+  {
+		let r = {"Players in a multiplayer world at a time in MineKhan":7,"Players at a time in multiplayer in MineKhan":12,"Longest time player-hosted server stayed open (minutes) in MineKhan":1439}
+    var el = document.querySelector("#records")
+    for(var i in r){
+      el.innerHTML += `${i}: ${r[i]}<br>`
+    }
+  }
+  document.querySelector("#showStats").onclick = function(){
+    this.style.display = "none"
+    fetch("/server/users").then(r => r.json()).then(r => {
+      var el=document.querySelector("#users")
+      el.innerHTML = "There are currently "+r.length+" users."
+      var show = document.querySelector("#showUsers")
+      show.style.display = ""
+      show.onclick = () => {
+        show.style.display = "none"
+        for(var i=0; i<r.length; i++){
+          r[i] = r[i].replace("user:", '')
+          r[i] = "<a href='/user?user="+escape(r[i])+"'>"+r[i]+"</a>"
+        }
+        el.innerHTML = "Users:<br>"+r.join("<br>")
+      }
+    })
+    fetch("/server/posts").then(r => r.json()).then(r => {
+      document.querySelector("#posts").innerHTML = "There are currently "+r.length+" posts."
+    })
+    fetch("/server/worlds").then(r => r.json()).then(r => {
+      document.querySelector("#worlds").innerHTML = "There are currently "+r.length+" worlds."
+    })
+    fetch("/server/maps").then(r => r.json()).then(r => {
+      document.querySelector("#maps").innerHTML = "There are currently "+Object.keys(r).length+" maps and other stuff."
+    })
+  }
+  /*fetch("/minekhan/recentUpdates").then(r => r.text()).then(r => {
+    document.getElementById('updates').innerHTML = r.replace(/\n/g,"<br>")
+  })*/
+</script>
+
+<script src="/assets/common.js"></script> <!--This has swal in it-->
+<script src="/websitecontent/common.js"></script>
+<script>
+	//localforageScript.addEventListener("load", async() => {
+	if (localStorage.getItem("cookieSeen") !== "true") {
+		document.querySelector("#cookie-banner").style.display = ""
+	};
+	document.querySelector("#cookie-banner .close").onclick = () => {
+		document.querySelector("#cookie-banner").style.display = "none"
+		localStorage.setItem("cookieSeen","true")
+	}
+</script>
+
+</body>
+</html>

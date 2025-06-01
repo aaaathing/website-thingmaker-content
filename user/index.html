@@ -255,14 +255,14 @@ ${map.name.replace(/_/g," ")}
         }
         ws.onerror = () => ws.close()
       }
-      setInterval(() => {
+      if(window.doLiveContent) setInterval(() => {
         if(!ws && navigator.onLine){
           initWs()
           fetchUser()
         }
       }, 1000)
       fetchUser()
-      initWs()
+      if(window.doLiveContent) initWs()
       function comment(c){
         c = c || commentBox.value
 
