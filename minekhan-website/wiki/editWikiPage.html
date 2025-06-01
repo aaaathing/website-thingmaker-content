@@ -63,7 +63,7 @@
           autocorrect: 'off'
         }
       })*/
-      fetch("/server/editWikiPage/"+name, {
+      fetch(serverBase+"/server/editWikiPage/"+name, {
         method:"POST",
         body:JSON.stringify({
           //pwd:p.value,
@@ -89,7 +89,7 @@
 
     onbeforeunload = function(){return false} //ask before reloading or closing
     
-    /*fetch("/server/wikiPages").then(r => r.json()).then(pages => {
+    /*fetch(serverBase+"/server/wikiPages").then(r => r.json()).then(pages => {
       var html = ""
       for(var p of pages){
         var selected = p === name ? "selected" : ""

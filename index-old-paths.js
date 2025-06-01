@@ -84,27 +84,22 @@ router.get("/around/:what", async(req,res) => {
 
 
 //============ from mk website ========
-function getMapTitle(m){
-  m = Object.assign({},m)
-  m.bytes = m.file ? m.file.length : m.code.length
-  delete m.code
-  delete m.file
-  return m
-}
-function getRPTitle(m){
-  m = Object.assign({},m)
-  m.bytes = m.file.length
-  delete m.file
-  return m
+function fixImage(req,o){
+	if(o.thumbnail && o.thumbnail.startsWith("/images/")){
+		o.thumbnail = ("https://"+req.hostname)+o.thumbnail
+	}
 }
 router.get("/server/maps", async function(req,res){
   let maps = await db.get("maps")
+	for(let i in maps) fixImage(req,maps[i])
   res.json(maps)
 })
 router.get("/server/mapsCategory/:c", async function(req,res){
   let maps = await db.get("mapsCategory:"+req.params.c)
-  if(maps) res.json(maps)
-  else if(mapCategories.includes(req.params.c)) res.json({})
+  if(maps) {
+		for(let i in maps) fixImage(req,maps[i])
+		res.json(maps)
+	} else if(mapCategories.includes(req.params.c)) res.json({})
   else res.json(null)
 })
 router.get("/server/mapsSearch", async function(req,res){
@@ -113,6 +108,7 @@ router.get("/server/mapsSearch", async function(req,res){
   let maps = await db.get("maps")
   for(let i in maps){
     if(maps[i].name.toLowerCase().includes(q) || maps[i].description && maps[i].description.toLowerCase().includes(q)){
+			fixImage(req,maps[i])
       r[i] = maps[i]
     }
   }
@@ -127,6 +123,7 @@ router.get("/server/map/*", async function(req,res){
   if(!map){
     return res.status(404).json(null)
   }
+	fixImage(req,map)
   map.bytes = map.file ? map.file.length : map.code.length
   res.json(map)
 })
@@ -134,7 +131,10 @@ router.get("/server/maps/:user", async function(req,res,next){
   if(!req.params.user) return next()
   let maps = await db.get("maps"), userMaps = {}
   for(let i in maps){
-    if(maps[i].user === req.params.user) userMaps[i] = maps[i]
+    if(maps[i].user === req.params.user) {
+			fixImage(req,maps[i])
+			userMaps[i] = maps[i]
+		}
   }
   res.json(userMaps)
 })
@@ -144,6 +144,7 @@ router.get("/server/rp/*", async function(req,res){
   if(!rp){
     return res.status(404).json(null)
   }
+	fixImage(req,rp)
   rp.bytes = rp.file.length
   delete rp.file
   res.json(rp)

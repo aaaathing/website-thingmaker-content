@@ -10,7 +10,7 @@ Logging in
     parent.postMessage("canceled", "*");
   }
   window.onbeforeunload = postCanceled
-  fetch("/server/getuser",{credentials:'include'}).then(r => r.text()).then(r => {
+  fetch(serverBase+"/server/getuser",{credentials:'include'}).then(r => r.text()).then(r => {
     if(r) postLogged(r)
     else postCanceled()
   })

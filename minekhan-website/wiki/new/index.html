@@ -170,7 +170,7 @@
     var pwd = document.querySelector("#pwd")
     var msg = document.querySelector("#message")
     function save(onfail){
-      fetch("/server/wikiPage", {
+      fetch(serverBase+"/server/wikiPage", {
         method:"POST",
         body:JSON.stringify({
           name:theName.value,

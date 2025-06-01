@@ -78,12 +78,12 @@
         console.log(JSON.stringify(reverse))
       }*/
       var content = document.getElementById("content")
-      fetch("/server/posts").then(r => r.json()).then(async data => {
+      fetch(serverBase+"/server/posts").then(r => r.json()).then(async data => {
         data.forEach(r => {
           var div = document.createElement("div")
           div.className = "box"
           div.id = r.id
-          div.innerHTML = `<a href="/post?id=${r.id}">${sanitize(r.title)}</a> <span class="floatright">${timeString(r.timestamp)}</span> <br>by <a href="/user?user=${r.username}" class="user"><img class="pfp" src="/server/pfp/${r.username}"  loading="lazy"> ${r.username}</a>`
+          div.innerHTML = `<a href="/post?id=${r.id}">${sanitize(r.title)}</a> <span class="floatright">${timeString(r.timestamp)}</span> <br>by <a href="/user?user=${r.username}" class="user"><img class="pfp" src="${serverBase}/server/pfp/${r.username}"  loading="lazy"> ${r.username}</a>`
           content.appendChild(div)
           enableUserPopup(div.querySelector(".user"), r.username)
         })

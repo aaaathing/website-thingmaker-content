@@ -44,13 +44,13 @@
     <script src="/websitecontent/common.js"></script>
     <script>
       var list = document.getElementById("list"), search = document.getElementById("search"), searchTerm = "", users
-      fetch("/server/account",{
+      fetch(serverBase+"/server/account",{
         credentials:'include'
       }).then(r => r.json()).then(r => {
         if(!r.admin) document.getElementById("content").innerHTML = `<h1>Admin only page</h1>`
       })
       function showList(){
-        fetch("/server/users").then(r => r.json()).then(r => {
+        fetch(serverBase+"/server/users").then(r => r.json()).then(r => {
           users = r.map(r => r.replace("user:",''))
           updateList()
         })
@@ -82,7 +82,7 @@
         document.getElementById("messageHolder").classList.remove("hidden")
         document.getElementById("messageSend").onclick = function(){
           var t = document.getElementById("message").value
-          fetch("/server/admin/messageUser/"+user, {
+          fetch(serverBase+"/server/admin/messageUser/"+user, {
             credentials: 'include',
             method: "POST",
             body: JSON.stringify({message: t, sendWebPush:document.querySelector("#sendWebPush").checked})
@@ -99,7 +99,7 @@
         document.getElementById("giveCapeHolder").classList.remove("hidden")
         document.getElementById("giveCapeBtn").onclick = function(){
           var t = document.getElementById("giveCapeInput").value
-          fetch("/server/admin/giveCape/"+user, {
+          fetch(serverBase+"/server/admin/giveCape/"+user, {
             credentials: 'include',
             method: "POST",
             body: JSON.stringify({name: t})
@@ -114,7 +114,7 @@
       }
 
       function updateBanned(){
-        fetch("/server/banned").then(r => r.text()).then(r => {
+        fetch(serverBase+"/server/banned").then(r => r.text()).then(r => {
           document.querySelector("#banned").innerHTML = r
         })
       }

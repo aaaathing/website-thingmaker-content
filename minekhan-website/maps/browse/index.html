@@ -45,7 +45,7 @@
 <script src="/assets/common.js"></script>
     <script src="/websitecontent/common.js"></script>
 <script>
-  fetch("/server/maps").then(r => r.json()).then(maps => {
+  fetch(serverBase+"/server/maps").then(r => r.json()).then(maps => {
     var html = ""
     for(var i in maps){
       let thing = maps[i]

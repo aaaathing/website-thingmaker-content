@@ -187,7 +187,7 @@
         container.innerHTML += `<a href="code%20editor/html.html?program=0">First Webpage</a>`
       }catch{}*/
 
-      fetch('/server/account',{
+      fetch(serverBase+'/server/account',{
         credentials: "include"
       }).then(r => r.json()).then(data => {
         document.querySelector('#username').innerHTML = data.username+"'s account (My account)"
@@ -202,14 +202,14 @@
           document.querySelector("#capes").classList.remove("hidden")
           if(data.cape) drawCape(data.cape, document.querySelector("#currentCape"))
           if(data.admin){
-            fetch("/server/capes").then(r => r.json()).then(r => populateCapeList(r,true))
+            fetch(serverBase+"/server/capes").then(r => r.json()).then(r => populateCapeList(r,true))
             document.querySelector("#addCape").classList.remove("hidden")
           }else{
             var p = []
             var capes = {}
             if(data.ownedCapes){
               data.ownedCapes.forEach(v => {
-                p.push(fetch("/server/cape/"+escape(v)).then(r => r.text()).then(r => capes[v] = r))
+                p.push(fetch(serverBase+"/server/cape/"+escape(v)).then(r => r.text()).then(r => capes[v] = r))
               })
             }
             Promise.all(p).then(() => populateCapeList(capes))
@@ -221,18 +221,18 @@
       })
 
       function logout(){
-        fetch("/server/logout", {credentials: 'include'}).then(() => location.href = "/").catch(alert)
+        fetch(serverBase+"/server/logout", {credentials: 'include'}).then(() => location.href = "/").catch(alert)
       }
       function deleteAccount(){
         if(!confirm("Are you sure your want to delete your account? Your will lose access to your cloud saves and posts.")) return
-        fetch("/server/deleteAccount", {
+        fetch(serverBase+"/server/deleteAccount", {
           method: "DELETE",
           credentials: 'include'
         }).then(() => location.href = "/website/website.html").catch(alert)
       }
       function changePfp(){
         var url = document.querySelector("#pfp input").value
-        fetch("/server/changePfp", {
+        fetch(serverBase+"/server/changePfp", {
           method:"POST",
           credentials:'include',
           body: JSON.stringify({pfp:url})
@@ -244,7 +244,7 @@
       }
       function changeBG(){
         var url = document.querySelector("#pfp input").value
-        fetch("/server/changePfp", {
+        fetch(serverBase+"/server/changePfp", {
           method:"POST",
           credentials:'include',
           body: JSON.stringify({bg:url})
@@ -267,7 +267,7 @@
         var ok = document.getElementById("changePwdBtn");
         ok.onclick = () => {
           form.style.display = "none"
-          fetch("/server/changePwd", {
+          fetch(serverBase+"/server/changePwd", {
             method:"POST",
             credentials:'include',
             body: JSON.stringify({pwd: document.getElementById("newPwd").value})
@@ -291,7 +291,7 @@
         var ok = document.getElementById("changeEmailBtn");
         ok.onclick = () => {
           form.style.display = "none"
-          fetch("/server/changeEmail", {
+          fetch(serverBase+"/server/changeEmail", {
             method:"POST",
             credentials:'include',
             body: JSON.stringify({email: document.getElementById("newEmail").value})
@@ -305,7 +305,7 @@
       function saveBio(){
         document.querySelector("#bioInfo").innerHTML = ""
         var v = document.querySelector("#bioBox").value
-        fetch("/server/changeBio", {
+        fetch(serverBase+"/server/changeBio", {
           method:"POST",
           credentials:'include',
           body: JSON.stringify({bio:v})
@@ -327,7 +327,7 @@
         fr.readAsDataURL(skinUpload.files[0])
       }
       function uploadSkin(url){
-        fetch("/server/changeSkin",{
+        fetch(serverBase+"/server/changeSkin",{
           credentials:'include',
           method:"POST",
           body:JSON.stringify({
@@ -407,7 +407,7 @@
           a.innerHTML = "Delete cape"
           a.onclick = function(){
             if(!confirm("Are you sure you want to delete "+name+"? It will delete for all users.")) return
-            fetch("/server/removeCape",{
+            fetch(serverBase+"/server/removeCape",{
               method:"POST",
               credentials:"include",
               body:JSON.stringify({name:name})
@@ -424,7 +424,7 @@
         }
 
         div.onclick = function(){
-          fetch("/server/equipCape",{
+          fetch(serverBase+"/server/equipCape",{
             method:"POST",
             credentials:'include',
             body:JSON.stringify({cape:name})
@@ -449,7 +449,7 @@
         div.innerHTML = "None"
         div.style.display = "block"
         div.onclick = function(){
-          fetch("/server/equipCape",{
+          fetch(serverBase+"/server/equipCape",{
             method:"POST",
             credentials:'include',
             body:JSON.stringify({cape:null})
@@ -473,7 +473,7 @@
           var theName = prompt("What will the cape be called?")
           if(!theName) return
           var url = fr.result
-          fetch("/server/addCape",{
+          fetch(serverBase+"/server/addCape",{
             method:"POST",
             credentials:"include",
             body:JSON.stringify({name:theName,url:url})
@@ -492,7 +492,7 @@
       function toggleProfanityFilter(){
         var el = document.querySelector("#profanityFilter")
         var on = !el.classList.contains("checked")
-        fetch("/server/changeProfanityFilter",{
+        fetch(serverBase+"/server/changeProfanityFilter",{
           credentials:'include',
           method:"POST",
           body:JSON.stringify({on})

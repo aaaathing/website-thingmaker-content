@@ -41,7 +41,7 @@
       const urlParams = new URLSearchParams(location.search);
       var id = urlParams.get('id')
       var msg = document.querySelector("#msg")
-      fetch("/server/post/"+id).then(r => r.json()).then(r => {
+      fetch(serverBase+"/server/post/"+id).then(r => r.json()).then(r => {
         if(!r){
           return location.href = "/posts"
         }
@@ -59,7 +59,7 @@
 
       function save(){
         var content = document.querySelector("#postContent .comment-box").value
-        fetch("/server/editPost/"+id, {
+        fetch(serverBase+"/server/editPost/"+id, {
           method:"POST",
           credentials:"include",
           body:JSON.stringify({

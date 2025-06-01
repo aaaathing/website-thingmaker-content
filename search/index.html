@@ -108,13 +108,13 @@
         Servers:{url:"/servers",description:"A live list of servers on MineKhan."},
       }
       Promise.all([
-        fetch("/server/maps").then(r => r.json()).then(data => {
+        fetch(serverBase+"/server/maps").then(r => r.json()).then(data => {
           for(i in data){
             var map = data[i]
             links["Map: "+map.name.replace("map:","")] = {url:"/maps/map/?map="+map.name, description:map.description}
           }
         }),
-        fetch("/server/wikiPages").then(r => r.json()).then(data => {
+        fetch(serverBase+"/server/wikiPages").then(r => r.json()).then(data => {
           for(i in data){
             var page = data[i]
             hiddenSpan.innerHTML = page.content

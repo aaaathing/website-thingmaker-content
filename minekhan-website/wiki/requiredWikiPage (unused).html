@@ -35,7 +35,7 @@
     <p class="number">Current number of wiki pages: <u id="num"> </u>!</p>
     <center><button onclick="window.location.href = '/'" class="home"><img src="https://cdn.icon-icons.com/icons2/2248/PNG/512/home_circle_icon_137496.png" alt="home" class="homeimg">Home</button></center>
     <script>
-      fetch("/server/wikiPageList").then(r => r.json()).then(data => {
+      fetch(serverBase+"/server/wikiPageList").then(r => r.json()).then(data => {
         document.getElementById("num").innerHTML =  data.length
       })
       
@@ -73,7 +73,7 @@
     table.id = "tableContents"
     table.innerHTML = tableHTML
     content.prepend(table)
-    fetch("/server/wikiPages").then(r => r.json()).then(pages => {
+    fetch(serverBase+"/server/wikiPages").then(r => r.json()).then(pages => {
       var html = ""
       for(var i in pages){
         var p = pages[i]

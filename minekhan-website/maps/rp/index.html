@@ -49,7 +49,7 @@
 
   var download
 
-  fetch("/server/rp/"+urlParams.get("rp")).then(r => r.json()).then(map => {
+  fetch(serverBase+"/server/rp/"+urlParams.get("rp")).then(r => r.json()).then(map => {
     var html = ""
     if(map){
       if(map.thumbnail) html += "<img class='thumbnail' src='"+map.thumbnail+"'>"

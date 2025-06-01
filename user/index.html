@@ -135,7 +135,7 @@
       async function fetchUser(){
         yourUsername = userInfo && userInfo.username
         you = userInfo
-        fetch('/server/account/'+escape(unescape(username)),{
+        fetch(serverBase+'/server/account/'+escape(unescape(username)),{
           credentials: "include"
         }).then(r => r.json()).then(data => {
           if((!data) || (!username)){
@@ -204,7 +204,7 @@
           }
         })
   
-        fetch('/server/posts/'+username,{
+        fetch(serverBase+'/server/posts/'+username,{
           credentials: "include"
         }).then(r => r.json()).then(data => {
           var el = document.getElementById("postsContent")
@@ -218,7 +218,7 @@
           })
         })
 
-        fetch('/server/maps/'+username,{
+        fetch(serverBase+'/server/maps/'+username,{
           credentials: "include"
         }).then(r => r.json()).then(data => {
           var el = document.getElementById("mapsContent")
@@ -266,7 +266,7 @@ ${map.name.replace(/_/g," ")}
       function comment(c){
         c = c || commentBox.value
 
-        fetch("/server/commentUser/"+username, {
+        fetch(serverBase+"/server/commentUser/"+username, {
           method:"POST",
           body: JSON.stringify({comment: c}),
           credentials: 'include'
@@ -288,7 +288,7 @@ ${map.name.replace(/_/g," ")}
         cel.id = id
         cel.innerHTML =
         "<div class='top'><a class='user' href='user?user="+c.username+"'>"
-        +"<img class='pfp' src='/server/pfp/"+c.username+"' loading='lazy'>"
+        +"<img class='pfp' src='"+serverBase+"/server/pfp/"+c.username+"' loading='lazy'>"
         +"<span class='username'>"+c.username+"</span></a>"
         +"<span class='right time' style='padding:0 8px;'>"+timeString(c.timestamp)+"</span>"
         +(yourUsername === c.username || yourUsername === username || you && you.admin ? "<a class='right' onclick='deleteComment(\""+c.id+"\")'>Delete</a>" : "")
@@ -300,7 +300,7 @@ ${map.name.replace(/_/g," ")}
       }
       function deleteComment(cid){
         var c = document.getElementById("comment"+cid)
-        fetch("/server/deleteUserComment/"+username, {
+        fetch(serverBase+"/server/deleteUserComment/"+username, {
           credentials:'include',
           method: 'POST',
           body: JSON.stringify({cid: cid})

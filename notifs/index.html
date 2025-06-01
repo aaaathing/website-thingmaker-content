@@ -67,7 +67,7 @@
     <script src="/websitecontent/common.js"></script>
     <script>
       var content = document.getElementById("content")
-      fetch("/server/account", {
+      fetch(serverBase+"/server/account", {
         credentials: 'include'
       }).then(r => r.json()).then(data => {
         if((!data.notifs) || (data.notifs.length===0)){
@@ -93,13 +93,13 @@
         }
         content.innerHTML += html
 
-        fetch("/server/clearNotifs", {
+        fetch(serverBase+"/server/clearNotifs", {
           credentials: 'include'
         }) //clear notifications
       })
 
       function deleteNotifs(){
-        fetch("/server/deleteNotifs",{credentials:'include'}).then(r => r.json()).then(r => {
+        fetch(serverBase+"/server/deleteNotifs",{credentials:'include'}).then(r => r.json()).then(r => {
           if(r.success){
             location.reload()
           }else{

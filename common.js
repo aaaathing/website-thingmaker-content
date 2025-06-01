@@ -21,21 +21,22 @@ function urlBase64ToUint8Array(base64String) {
 const publicVapidKey = 'BC97-wjdng136e_0JIJV3CHzcPKzfJsaCMscJrkoB1GMuyOJY8AvJg70WmGY5io5mPUEaBEbHrizKUvqqFagd5g';
 
 async function subscribe() {
-  //if(!swRegister) return Swal.fire({
-  //  title:"Wait!",
-  //  text: 'Please wait for service worker to register.',
-  //  icon: 'error',
-  //})
+  if(!swRegister) return Swal.fire({
+    title:"Wait!",
+    text: 'Please wait for service worker to register.',
+    icon: 'error',
+  })
   if(subscription) return Swal.fire({
     title:"Wait!",
     text: 'You already subscribed.',
     icon: 'error',
   })
-  subscription = await (await swRegister).pushManager.subscribe({
+	let swRegistered = await swRegister
+  subscription = await swRegistered.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
   })
-  await fetch('/server/subscribe', {
+  await fetch(serverBase+'/server/subscribe', {
     method: 'POST',
     body: JSON.stringify(subscription),
     headers: {
@@ -45,7 +46,7 @@ async function subscribe() {
 }
 async function sameSubscribe(){
   if(!subscription) return console.error("no subscription")
-  await fetch('/server/subscribe', {
+  await fetch(serverBase+'/server/subscribe', {
     method: 'POST',
     body: JSON.stringify(subscription),
     headers: {
@@ -55,7 +56,7 @@ async function sameSubscribe(){
 }
 
 let subscription
-swRegister.then(r => {
+if(swRegister) swRegister.then(r => {
   windowLoadedForPush++
   mentionNotifications()
 })
@@ -105,7 +106,7 @@ function findUnread(n){
   if(a > 0) return a
 }
 
-fetch("/server/accountNav").then(r => r.json()).then(r => {
+fetch(serverBase+"/server/accountNav").then(r => r.json()).then(r => {
 document.getElementById("userNav").style.display = ""
 userInfo = r || null
 var loggedInEl = document.getElementById("loggedIn")
@@ -226,7 +227,7 @@ function makeVotes(el,data,yourUsername){
   updateVotes(data)
   el.querySelector(".vote_"+yourVote).classList.add("selected")
   function vote(amount){
-    fetch("/server/voteUser/"+username, {
+    fetch(serverBase+"/server/voteUser/"+username, {
       credentials:'include',
       method: 'POST',
       body: JSON.stringify({vote:amount})

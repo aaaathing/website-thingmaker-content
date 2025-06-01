@@ -29,7 +29,7 @@
     <script src="/assets/common.js"></script>
     <script src="/websitecontent/common.js"></script>
     <script>
-      fetch("/server/account",{
+      fetch(serverBase+"/server/account",{
         credentials:'include'
       }).then(r => r.json()).then(r => {
         if(!r.admin) document.getElementById("content").innerHTML = `<h1>Admin only page</h1>`

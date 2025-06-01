@@ -60,7 +60,7 @@
         var title = document.getElementById("title").value
         var content = document.querySelector("#postContentTextbox .comment-box").value
         document.querySelector("#createBtn").disabled = true
-        fetch("/server/post",{
+        fetch(serverBase+"/server/post",{
           method: "POST",
           credentials: 'include',
           body: JSON.stringify({

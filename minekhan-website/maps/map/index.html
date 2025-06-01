@@ -49,7 +49,7 @@
 
   var download
 
-  fetch("/server/map/"+urlParams.get("map")).then(r => r.json()).then(map => {
+  fetch(serverBase+"/server/map/"+urlParams.get("map")).then(r => r.json()).then(map => {
     var html = ""
     if(map){
       if(map.thumbnail) html += "<img class='thumbnail' src='"+map.thumbnail+"'>"
@@ -76,7 +76,7 @@
 
       window.deleteIt = function(){
         if(!confirm("Are you sure you want to delete this map?")) return
-        fetch("/server/deleteMap/"+map.name, {method:"DELETE"}).then(r => r.json()).then(r => {
+        fetch(serverBase+"/server/deleteMap/"+map.name, {method:"DELETE"}).then(r => r.json()).then(r => {
           if(!r.success){
             alert(r.message)
           }else location.href = "maps/browse"

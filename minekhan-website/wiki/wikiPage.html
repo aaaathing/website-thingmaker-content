@@ -140,7 +140,7 @@
     <script src="/websitecontent/common.js"></script> <!--This has swal in it-->
     <script>
       let pagename
-      //fetch("/server/wikiPage/"+pagename).then(r => r.json()).then(handleData)
+      //fetch(serverBase+"/server/wikiPage/"+pagename).then(r => r.json()).then(handleData)
       handleData(PAGEDATA)
       async function handleData(data){
         if(!data){
@@ -210,7 +210,7 @@
           return Swal.fire('Post not Deleted', '', 'error')
         }
 
-        fetch("/server/deleteWikiPage/"+pagename,{
+        fetch(serverBase+"/server/deleteWikiPage/"+pagename,{
           method:"POST",
           body:JSON.stringify({pwd:pwd})
         }).then(r => r.json()).then(data => {
@@ -232,7 +232,7 @@
 
       function comment(){
         var content = document.querySelector("#commentContent .comment-box")
-        fetch("/server/commentOnWikiPage/"+pagename, {
+        fetch(serverBase+"/server/commentOnWikiPage/"+pagename, {
           method:"POST",
           body:JSON.stringify({
             content:content.value
@@ -275,7 +275,7 @@
           return Swal.fire('Comment not Deleted', '', 'error')
         }
 
-        fetch("/server/deleteCommentOnWikiPage/"+pagename, {
+        fetch(serverBase+"/server/deleteCommentOnWikiPage/"+pagename, {
           method:"POST",
           body:JSON.stringify({
             id:id,
@@ -295,7 +295,7 @@
       }
 
       /*//load links to pages
-      fetch("/server/wikiPages").then(r => r.json()).then(pages => {
+      fetch(serverBase+"/server/wikiPages").then(r => r.json()).then(pages => {
         var html = ""
         for(var p of pages){
           var selected = p === name ? "selected" : ""

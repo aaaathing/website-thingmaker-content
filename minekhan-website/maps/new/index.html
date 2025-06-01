@@ -116,7 +116,7 @@
         thumbnail: thumbnailData
       })
       console.log(body)
-      fetch("/server/map",{
+      fetch(serverBase+"/server/map",{
         method:"POST",
         body:body
       }).then(r => r.json()).then(r => {
@@ -129,7 +129,7 @@
       })
     }
 
-    fetch("/server/mapCategories").then(r => r.json()).then(r => {
+    fetch(serverBase+"/server/mapCategories").then(r => r.json()).then(r => {
       for(let i of r){
         let o = document.createElement("option")
         o.textContent = i.replace(/[A-Z]/g, " $&").replace(/./, c => c.toUpperCase())

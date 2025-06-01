@@ -88,7 +88,7 @@
         file: fileData,
         thumbnail: thumbnailData
       })
-      fetch("/server/rp",{
+      fetch(serverBase+"/server/rp",{
         method:"POST",
         body:body
       }).then(r => r.json()).then(r => {

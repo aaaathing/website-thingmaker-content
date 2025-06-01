@@ -85,7 +85,7 @@
         file: fileData,
         thumbnail: thumbnailData
       })
-      fetch("/server/editrp/"+urlParams.get('rp'),{
+      fetch(serverBase+"/server/editrp/"+urlParams.get('rp'),{
         method:"POST",
         body:body
       }).then(r => r.json()).then(r => {
