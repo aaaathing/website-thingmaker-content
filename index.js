@@ -50,7 +50,7 @@ router.get("/saves/:u/:id", async(req,res)=>{
 global.router=router
 app.use(express.static(__dirname))
 router.get("/websitecontent/common.js", (req,res)=>{
-	res.sendFile(__dirname+"/common.js")
+	res.sendFile(__dirname+"/assets/common-websitecontent.js")
 })
 require("./index-old-paths.js")
 
