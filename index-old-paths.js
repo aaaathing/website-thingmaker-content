@@ -85,6 +85,7 @@ router.get("/around/:what", async(req,res) => {
 
 
 //============ from mk website ========
+const mapCategories = ["build","parkour","redstone","game"]
 function fixImage(req,o){
 	if(o.thumbnail && o.thumbnail.startsWith("/images/")){
 		o.thumbnail = ("https://"+req.hostname)+o.thumbnail
@@ -100,8 +101,7 @@ router.get("/server/mapsCategory/:c", async function(req,res){
   if(maps) {
 		for(let i in maps) fixImage(req,maps[i])
 		res.json(maps)
-	} else if(mapCategories.includes(req.params.c)) res.json({})
-  else res.json(null)
+	} else res.json({})
 })
 router.get("/server/mapsSearch", async function(req,res){
   let q = (req.query.q || "").toLowerCase()
