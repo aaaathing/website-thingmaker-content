@@ -12,6 +12,7 @@ app.use(cors({
 }))
 const router = express.Router();
 const requestIp = require('request-ip');
+const path = require('path');
 app.use((req,res,next)=>{
 	if(req.path.startsWith("/server/pfp"))
 		return next()
@@ -48,9 +49,10 @@ router.get("/saves/:u/:id", async(req,res)=>{
 })
 
 global.router=router
-app.use(express.static(__dirname))
+app.use(express.static(__dirname+"/public"))
+app.use("/minekhan-website", express.static(__dirname+"/minekhan-website/public"))
 router.get("/websitecontent/common.js", (req,res)=>{
-	res.sendFile(__dirname+"/assets/common-websitecontent.js")
+	res.sendFile(__dirname+"/public/assets/common-websitecontent.js")
 })
 require("./index-old-paths.js")
 
