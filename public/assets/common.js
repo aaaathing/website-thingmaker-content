@@ -1,3 +1,12 @@
+const serverBase = "" // url
+
+window.doLiveContent = false
+
+setTimeout(() => addBanner(
+`This is the old version of the website. The posts and accounts and things were shut down. These won't changed much anymore, and might be gone eventually. 😥 <br>
+<a href="https://drive.google.com/file/d/1SQNeXnzlSJkb0DgX-qx_CUdXA9-rHbNw/view?usp=drive_link">database download (posts,users,maps,wiki) (may 2025)</a> | <a href="https://drive.google.com/file/d/1Mr8ABXTjNopGtb100E3geBHxcU7t-DtL/view?usp=drive_link">database download (jul 10, 2024) (posts,users,maps,wiki, people's cloud saves)</a>`,
+"#FFA372"), 0)
+
 
 /*
 This script is used in most pages of this website
